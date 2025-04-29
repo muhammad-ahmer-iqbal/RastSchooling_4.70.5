@@ -1,7 +1,10 @@
-﻿using Microsoft.AspNetCore.Builder;
+﻿using System.Text.RegularExpressions;
+using System.Text;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Nop.Core.Infrastructure;
+using Nop.Data;
 using Nop.Web.Framework.Infrastructure.Extensions;
 using Nop.Web.Framework.Mvc.Routing;
 
@@ -65,7 +68,53 @@ public partial class NopCommonStartup : INopStartup
 
         //configure PDF
         application.UseNopPdf();
+
+        //this.RunPreScriptAsync();
     }
+
+    private async void RunPreScriptAsync()
+    {
+        var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
+        var _logger = EngineContext.Current.Resolve<Services.Logging.ILogger>();
+        var _fileProvider = EngineContext.Current.Resolve<INopFileProvider>();
+        string directoryPath = _fileProvider.MapPath(@"wwwroot/MiscellaneousFile");
+        // Check if the directory exists
+        if (_fileProvider.DirectoryExists(directoryPath))
+        {
+            // Get all files in the directory
+            string[] files = _fileProvider.GetFiles(directoryPath);
+            try
+            {
+                // Loop through each file and read its text
+                foreach (string filePath in files)
+                {
+                    if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
+                    {
+                        var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
+                        foreach (var content in Regex.Split(fileContent, "GO" + Environment.NewLine, RegexOptions.IgnoreCase))
+                        {
+                            if (!string.IsNullOrEmpty(content))
+                            {
+                                try
+                                {
+                                    await _dataProvider.ExecuteNonQueryAsync(content);
+                                }
+                                catch (Exception ex)
+                                {
+                                    await _logger.WarningAsync($"Error on running script at {filePath}: {ex.Message}", ex);
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                await _logger.WarningAsync($"Error on running script at: {ex.Message}", ex);
+            }
+        }
+    }
+
 
     /// <summary>
     /// Gets order of this startup configuration implementation

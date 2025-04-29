@@ -1,0 +1,6 @@
+IF EXISTS (SELECT * FROM CustomerRole WHERE Id NOT IN (1,3,4))
+BEGIN
+DELETE FROM CustomerRole WHERE Id NOT IN (1,3,4)
+END
+GO
+
