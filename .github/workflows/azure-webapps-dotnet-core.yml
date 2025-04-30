@@ -21,7 +21,7 @@ name: Build and deploy ASP.Net Core app to an Azure Web App
 
 env:
   DOTNET_VERSION: '8.0.x'                 # set this to the .NET Core version to use
-  PUBLISHED_PATH: ${{env.DOTNET_ROOT}}/myapp
+  PUBLISHED_PATH: ./publish_output
 
 on:
   push:
