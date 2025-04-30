@@ -87,4 +87,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
+          local_dir: ./publish_output
+          remote_dir: /
                 
