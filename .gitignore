@@ -643,3 +643,4 @@ FodyWeavers.xsd
 /Presentation/Nop.Web/Themes/**/*.rar
 /Presentation/Nop.Web/Areas/Admin/**/*.rar
 !/Plugins/**/*.dll
+
