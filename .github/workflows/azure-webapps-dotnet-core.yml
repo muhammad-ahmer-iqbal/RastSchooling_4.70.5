@@ -78,6 +78,9 @@ jobs:
         with:
           name: .net-app
       
+      - name: Check publish output exists
+        run: ls -la ${{env.PUBLISHED_PATH}}
+      
       - name: FTP Deploy Action via lftp (FTP, SFTP, FTPS)
         # You may pin to the exact commit or the version.
         # uses: pontago/lftp-deploy-action@47debd112419af76b6b7c0ee7861dc506a26f01b
