@@ -71,7 +71,3 @@ jobs:
           host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          protocol: ftp
-          local_dir: ${{env.PUBLISHED_PATH}}
-          remote_dir: /
-                
