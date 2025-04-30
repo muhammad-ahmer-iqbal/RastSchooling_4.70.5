@@ -83,8 +83,8 @@ jobs:
         uses: pontago/lftp-deploy-action@v1.0.1
         with:
           # Sever Hostname or IP
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+          host: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
                 
