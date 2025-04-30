@@ -71,3 +71,6 @@ jobs:
           host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
+          commands: |
+            open ${{ secrets.FTP_HOST }}
+            mirror -R ${{env.PUBLISHED_PATH}} /
