@@ -21,6 +21,7 @@ name: Build and deploy ASP.Net Core app to an Azure Web App
 
 env:
   DOTNET_VERSION: '8.0.x'                 # set this to the .NET Core version to use
+  PUBLISHED_PATH: ${{env.DOTNET_ROOT}}/myapp
 
 on:
   push:
@@ -54,13 +55,13 @@ jobs:
         run: dotnet build --configuration Release
 
       - name: dotnet publish
-        run: dotnet publish -c Release -o ./publish_output
+        run: dotnet publish -c Release -o ${{env.PUBLISHED_PATH}}
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
         with:
           name: .net-app
-          path: ./publish_output
+          path: ${{env.DOTNET_ROOT}}
           
   deploy:
     permissions:
@@ -87,6 +88,6 @@ jobs:
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
           protocol: ftp
-          local_dir: ./publish_output
+          local_dir: ${{env.PUBLISHED_PATH}}
           remote_dir: /
                 
