@@ -70,8 +70,6 @@ public partial class NopCommonStartup : INopStartup
         application.UseNopPdf();
 
         //this.RunPreScriptAsync();
-
-
     }
 
     private async void RunPreScriptAsync()
