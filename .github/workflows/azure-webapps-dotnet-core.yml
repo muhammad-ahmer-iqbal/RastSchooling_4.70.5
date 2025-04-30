@@ -62,15 +62,27 @@ jobs:
       
       - name: Check publish output exists
         run: ls -la ${{env.PUBLISHED_PATH}}
-      
-      - name: FTP Transfer
-        # You may pin to the exact commit or the version.
-        uses: joutvhu/ftp-transfer@v1.0.0
+
+      - name: FTP Deploy using lftp
+        uses: pontago/lftp-deploy-action@v1.0.1
         with:
-          # Sever Hostname or IP
           host: ${{ secrets.FTP_HOST }}
           username: ${{ secrets.FTP_USERNAME }}
           password: ${{ secrets.FTP_PASSWORD }}
-          commands: |
-            open ${{ secrets.FTP_HOST }}
-            mirror -R ${{env.PUBLISHED_PATH}} /
+          protocol: ftp
+          local_dir: .${{env.PUBLISHED_PATH}}
+          remote_dir: /httpdocs/  # or any directory where you deploy your app
+          options: "--verbose --continue --retry 3 --parallel=4"
+
+      
+      # - name: FTP Transfer
+      #   # You may pin to the exact commit or the version.
+      #   uses: joutvhu/ftp-transfer@v1.0.0
+      #   with:
+      #     # Sever Hostname or IP
+      #     host: ${{ secrets.FTP_HOST }}
+      #     username: ${{ secrets.FTP_USERNAME }}
+      #     password: ${{ secrets.FTP_PASSWORD }}
+      #     commands: |
+      #       open ${{ secrets.FTP_HOST }}
+      #       mirror -R ${{env.PUBLISHED_PATH}} /
