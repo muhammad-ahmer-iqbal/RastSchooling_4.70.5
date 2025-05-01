@@ -84,4 +84,4 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           keepalive: true
           commands: |
-            put ${{env.PUBLISHED_PATH}} /
+            put ${{env.PUBLISHED_PATH}} ./
