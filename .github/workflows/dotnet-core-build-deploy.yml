@@ -3,7 +3,7 @@ name: Build and deploy ASP.Net Core app on a FTP
 env:
   DOTNET_VERSION: '8.0.x'                 # set this to the .NET Core version to use
   PUBLISHED_PATH: ./publish_output
-  LOCAL_APP_DATA_PATH: RastSchooling_4.70.5/DirectDeploy/App_Data
+  LOCAL_APP_DATA_PATH: ./DirectDeploy/App_Data
 
 on:
   push:
