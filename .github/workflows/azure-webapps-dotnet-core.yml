@@ -37,6 +37,10 @@ jobs:
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.PUBLISHED_PATH}}
+
+      - name: Remove unwanted folders from publish output
+        run: |
+          rm -rf ${{env.PUBLISHED_PATH}}/App_Data
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
