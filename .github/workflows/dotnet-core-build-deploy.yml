@@ -19,6 +19,9 @@ jobs:
     permissions:
       contents: none
     runs-on: ubuntu-latest
+    environment:
+      name: 'Development'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
       - uses: actions/checkout@v4
@@ -77,7 +80,7 @@ jobs:
   #         name: .net-app
   #         path: ${{env.PUBLISHED_PATH}}
           
-  deploy:
+  deploy-2:
     permissions:
       contents: none
     runs-on: ubuntu-latest
