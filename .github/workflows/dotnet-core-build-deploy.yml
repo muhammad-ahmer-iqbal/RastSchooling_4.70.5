@@ -81,7 +81,7 @@ jobs:
       #     local_dir: ${{env.PUBLISHED_PATH}}
       #     remote_dir: /
 
-      - name: Check publish output exists
+      - name: Check direct deploy exists
         run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
         
       - name: Fast FTP for Direct Deploy
