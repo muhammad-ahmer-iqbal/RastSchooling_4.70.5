@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Check direct delpoy folder
+        run: ls -la ${{env.LOCAL_APP_DATA_PATH}}
+
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
