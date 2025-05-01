@@ -20,6 +20,9 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
+      - name: Check direct deploy exists
+        run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
       
       - name: Stop the site
         # You may pin to the exact commit or the version.
@@ -119,4 +122,4 @@ jobs:
           method: ftp
           # The local folder to copy, defaults to root project folder
           local_dir: ${{ env.LOCAL_APP_DATA_PATH }}
-          remote_dir: /App_Data
+          remote_dir: ${{ env.REMOTE_APP_DATA_PATH }}
