@@ -20,9 +20,6 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Check remote server
-        run: echo ${{ env.REMOTE_APP_DATA_PATH }}
-        
       - name: Set up .NET Core
         uses: actions/setup-dotnet@v4
         with:
@@ -122,4 +119,4 @@ jobs:
           method: ftp
           # The local folder to copy, defaults to root project folder
           local_dir: ${{ env.LOCAL_APP_DATA_PATH }}
-          remote_dir: ${{ env.REMOTE_APP_DATA_PATH }}
+          remote_dir: /App_Data
