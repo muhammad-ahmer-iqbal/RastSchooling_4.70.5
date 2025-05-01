@@ -34,6 +34,9 @@ jobs:
           mkdir upload_temp
           cp "${{ env.LOCAL_APP_OFFLINE_PATH }}" upload_temp/
 
+      - name: Check temp app offline exists
+        run: ls -la upload_temp
+        
       - name: Upload app_offline.htm to FTP
         uses: anvil-solutions/Fast-FTP-Action@2.1.3
         with:
