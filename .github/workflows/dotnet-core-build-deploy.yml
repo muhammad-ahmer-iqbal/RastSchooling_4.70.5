@@ -82,7 +82,7 @@ jobs:
       #     remote_dir: /
 
       - name: Check direct deploy exists
-        run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
+        run: ls -la ./
         
       - name: Fast FTP for Direct Deploy
         # You may pin to the exact commit or the version.
