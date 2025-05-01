@@ -20,6 +20,9 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Show repo structure
+        run: ls -R
+              
   #     - name: Set up .NET Core
   #       uses: actions/setup-dotnet@v4
   #       with:
@@ -81,9 +84,7 @@ jobs:
       #     local_dir: ${{env.PUBLISHED_PATH}}
       #     remote_dir: /
 
-      - name: Show repo structure
-        run: ls -R
-        
+      
       - name: Check direct deploy exists
         run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
         
