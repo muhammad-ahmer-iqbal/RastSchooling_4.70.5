@@ -24,7 +24,7 @@ jobs:
       - name: Show repo structure
         run: ls -R
       
-      - name: Check direct deploy exists
+      - name: Check app offline exists
         run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
       
       - name: Stop the site
