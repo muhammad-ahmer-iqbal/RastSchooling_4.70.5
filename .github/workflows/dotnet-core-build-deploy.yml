@@ -15,12 +15,14 @@ permissions:
   contents: read
 
 jobs:
-  build:
+  deploy:
+    permissions:
+      contents: none
     runs-on: ubuntu-latest
 
     steps:
       - uses: actions/checkout@v4
-
+      
       - name: Show repo structure
         run: ls -R
       
@@ -43,6 +45,12 @@ jobs:
           # The local folder to copy, defaults to root project folder
           local_dir: ${{ env.LOCAL_APP_OFFLINE_PATH }}
           remote_dir: /
+    
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
       
   #     - name: Set up .NET Core
   #       uses: actions/setup-dotnet@v4
