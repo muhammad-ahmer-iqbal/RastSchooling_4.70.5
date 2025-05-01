@@ -37,10 +37,6 @@ jobs:
 
       - name: dotnet publish
         run: dotnet publish -c Release -o ${{env.PUBLISHED_PATH}}
-
-      - name: Remove unwanted folders from publish output
-        run: |
-          rm -rf ${{env.PUBLISHED_PATH}}/App_Data
       
       - name: Upload artifact for deployment job
         uses: actions/upload-artifact@v4
@@ -90,6 +86,15 @@ jobs:
       #     commands: |
       #       mput ${{env.PUBLISHED_PATH}} ./
 
+      - name: Download from FTP
+        uses: joutvhu/ftp-transfer@v1.0.0
+        with:
+          host: ${{ secrets.FTP_HOST }}
+          username: ${{ secrets.FTP_USERNAME }}
+          password: ${{ secrets.FTP_PASSWORD }}
+          local-dir: ${{env.PUBLISHED_PATH}}/App_Data
+          remote-dir: /App_Data
+          direction: download
 
       - name: Fast FTP
         # You may pin to the exact commit or the version.
