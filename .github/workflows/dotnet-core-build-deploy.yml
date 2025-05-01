@@ -15,7 +15,7 @@ permissions:
   contents: read
 
 jobs:
-  deploy:
+  deploy-1:
     permissions:
       contents: none
     runs-on: ubuntu-latest
@@ -26,11 +26,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       
-      - name: Show repo structure
-        run: ls -R
-      
       - name: Check app offline exists
-        run: ls -la ${{ env.LOCAL_APP_OFFLINE_PATH }}
+        run: cat ${{ env.LOCAL_APP_OFFLINE_PATH }}
       
       - name: Stop the site
         # You may pin to the exact commit or the version.
@@ -50,6 +47,7 @@ jobs:
           remote_dir: /
     
   build:
+    needs: deploy-1
     runs-on: ubuntu-latest
 
     steps:
