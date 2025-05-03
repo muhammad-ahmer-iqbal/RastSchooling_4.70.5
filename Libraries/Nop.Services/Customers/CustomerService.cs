@@ -1715,7 +1715,7 @@ public partial class CustomerService : ICustomerService
 
     public virtual async Task<Customer> GetStudentByIdAsync(int id)
     {
-        var customer = await this.GetStudentByIdAsync(id);
+        var customer = await this.GetCustomerByIdAsync(id);
 
         return customer is not null && await this.IsStudentAsync(customer)
             ? customer
@@ -1724,7 +1724,7 @@ public partial class CustomerService : ICustomerService
 
     public virtual async Task<Customer> GetTeacherByIdAsync(int id)
     {
-        var customer = await this.GetStudentByIdAsync(id);
+        var customer = await this.GetCustomerByIdAsync(id);
 
         return customer is not null && await this.IsTeacherAsync(customer)
             ? customer

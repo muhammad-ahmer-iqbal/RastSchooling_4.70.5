@@ -123,6 +123,11 @@ EXEC sp_AddLocalization
 @ResourceValue = 'Back to list'
 GO
 
+EXEC sp_AddLocalization 
+@ResourceName = 'admin.students.edit',
+@ResourceValue = 'Edit Student'
+GO
+
 
 
 

@@ -1748,8 +1748,10 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<Customer, StudentModel>();
         CreateMap<StudentModel, Customer>();
 
-        CreateMap<StudentExtension, StudentModel>();
-        CreateMap<StudentModel, StudentExtension>();
+        CreateMap<StudentExtension, StudentModel>()
+            .ForMember(a => a.Id, b => b.Ignore());
+        CreateMap<StudentModel, StudentExtension>()
+            .ForMember(a => a.Id, b => b.Ignore());
     }
 
     #endregion
