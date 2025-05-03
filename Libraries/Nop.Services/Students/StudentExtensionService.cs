@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Nop.Core.Domain.Students;
+﻿using Nop.Core.Domain.Students;
 using Nop.Core;
 using Nop.Data;
-using Nop.Core.Domain.Customers;
 
 namespace Nop.Services.Students
 {
@@ -65,14 +59,7 @@ namespace Nop.Services.Students
         }
         public virtual async Task InsertUpdateStudentExtensionAsync(StudentExtension entity)
         {
-            if (entity.Id.Equals(default))
-            {
-                await this.InsertStudentExtensionAsync(entity);
-            }
-            else
-            {
-                await this.UpdateStudentExtensionAsync(entity);
-            }
+            await _studentExtensionRepository.InsertUpdateAsync(entity);
         }
 
         #endregion

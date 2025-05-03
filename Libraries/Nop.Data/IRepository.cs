@@ -246,6 +246,9 @@ public partial interface IRepository<TEntity> where TEntity : BaseEntity
     /// <returns>A task that represents the asynchronous operation</returns>
     Task TruncateAsync(bool resetIdentity = false);
 
+    Task InsertUpdateAsync(TEntity entity, bool publishEvent = true);
+
+
     #endregion
 
     #region Properties

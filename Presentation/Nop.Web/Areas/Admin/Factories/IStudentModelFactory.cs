@@ -7,6 +7,10 @@ namespace Nop.Web.Areas.Admin.Factories
     {
         Task<StudentSearchModel> PrepareStudentSearchModelAsync(StudentSearchModel searchModel);
         Task<StudentListModel> PrepareStudentListModelAsync(StudentSearchModel searchModel);
-        Task<StudentModel> PrepareStudentModelAsync(StudentModel model, Customer entity);
+        Task<StudentModel> PrepareStudentModelAsync(
+            StudentModel model,
+            Customer entity,
+            bool excludeProperties = default
+            );
     }
 }

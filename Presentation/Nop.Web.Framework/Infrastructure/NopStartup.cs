@@ -46,6 +46,7 @@ using Nop.Services.Seo;
 using Nop.Services.Shipping;
 using Nop.Services.Shipping.Date;
 using Nop.Services.Shipping.Pickup;
+using Nop.Services.Staffs;
 using Nop.Services.Stores;
 using Nop.Services.Students;
 using Nop.Services.Tax;
@@ -237,6 +238,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IWidgetModelFactory, WidgetModelFactory>();
         //new servies
         services.AddScoped<IStudentExtensionService, StudentExtensionService>();
+        services.AddScoped<ITeacherExtensionService, TeacherExtensionService>();
 
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));

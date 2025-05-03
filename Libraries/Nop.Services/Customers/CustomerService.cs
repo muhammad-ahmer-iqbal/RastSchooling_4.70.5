@@ -1693,14 +1693,7 @@ public partial class CustomerService : ICustomerService
 
     public virtual async Task InsertUpdateCustomerAsync(Customer entity)
     {
-        if (entity.Id.Equals(default))
-        {
-            await this.InsertCustomerAsync(entity);
-        }
-        else
-        {
-            await this.UpdateCustomerAsync(entity);
-        }
+        await _customerRepository.InsertUpdateAsync(entity);
     }
 
     public virtual async Task<bool> IsStudentAsync(Customer customer, bool onlyActiveCustomerRoles = true)

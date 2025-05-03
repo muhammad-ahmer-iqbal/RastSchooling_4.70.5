@@ -12,7 +12,7 @@ namespace Nop.Web.Areas.Admin.Models.Students
         }
 
         [NopResourceDisplayName("Admin.Students.StudentModel.Fields.MonthlyFee")]
-        public int? MonthlyFee { get; set; }
+        public int MonthlyFee { get; set; }
 
         [NopResourceDisplayName("Admin.Students.StudentModel.Fields.Email")]
         [DataType(DataType.EmailAddress)]

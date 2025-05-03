@@ -83,7 +83,11 @@ namespace Nop.Web.Areas.Admin.Factories
 
             return model;
         }
-        public virtual async Task<StudentModel> PrepareStudentModelAsync(StudentModel model, Customer entity)
+        public virtual async Task<StudentModel> PrepareStudentModelAsync(
+            StudentModel model,
+            Customer entity,
+            bool excludeProperties = default
+            )
         {
             if (entity != null)
             {
@@ -92,6 +96,11 @@ namespace Nop.Web.Areas.Admin.Factories
 
                 var studentExtension = await _studentExtensionService.GetStudentExtensionByCustomerIdAsync(entity.Id);
                 model = studentExtension.ToModel(model);
+            }
+
+            if (!excludeProperties)
+            {
+                model.Active = true;
             }
 
             model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId)).CurrencyCode;

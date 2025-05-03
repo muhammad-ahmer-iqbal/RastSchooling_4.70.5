@@ -711,6 +711,18 @@ public partial class EntityRepository<TEntity> : IRepository<TEntity> where TEnt
         await _dataProvider.TruncateAsync<TEntity>(resetIdentity);
     }
 
+    public virtual async Task InsertUpdateAsync(TEntity entity, bool publishEvent = true)
+    {
+        if (entity.Id.Equals(default))
+        {
+            await this.InsertAsync(entity, publishEvent);
+        }
+        else
+        {
+            await this.UpdateAsync(entity, publishEvent);
+        }
+    }
+
     #endregion
 
     #region Properties
