@@ -85,7 +85,7 @@ namespace Nop.Web.Areas.Admin.Controllers
                 ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.Email.InValid"));
             }
             else if (!model.Id.Equals(default)
-                &&await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
+                && await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
                 && existingCustomer is not null &&
                 !existingCustomer.Id.Equals(model.Id))
             {
@@ -107,9 +107,12 @@ namespace Nop.Web.Areas.Admin.Controllers
             await _customerService.InsertUpdateCustomerAsync(entity);
 
             var studentExtension = await _studentExtensionService.GetStudentExtensionByCustomerIdAsync(entity.Id)
-                ?? new StudentExtension();
+                ?? new StudentExtension()
+                {
+                    CustomerId = entity.Id
+                };
             studentExtension = model.ToEntity(studentExtension);
-            await _studentExtensionService.InsertStudentExtensionAsync(studentExtension);
+            await _studentExtensionService.InsertUpdateStudentExtensionAsync(studentExtension);
 
             var studentRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.StudentsRoleName);
             await _customerService.AddCustomerRoleMappingAsync(new CustomerCustomerRoleMapping()

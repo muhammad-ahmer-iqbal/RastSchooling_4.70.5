@@ -649,7 +649,7 @@ public partial interface ICustomerService
 
     #endregion
 
-    Task InsertUpdateCustomerAsync(Customer customer);
+    Task InsertUpdateCustomerAsync(Customer entity);
     Task<bool> IsStudentAsync(Customer customer, bool onlyActiveCustomerRoles = true);
     Task<bool> IsTeacherAsync(Customer customer, bool onlyActiveCustomerRoles = true);
     Task<Customer> GetStudentByIdAsync(int id);

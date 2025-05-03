@@ -20,5 +20,6 @@ namespace Nop.Services.Students
         Task UpdateStudentExtensionAsync(StudentExtension entity);
         Task DeleteStudentExtensionAsync(StudentExtension entity);
         Task<StudentExtension> GetStudentExtensionByCustomerIdAsync(int customerId);
+        Task InsertUpdateStudentExtensionAsync(StudentExtension entity);
     }
 }

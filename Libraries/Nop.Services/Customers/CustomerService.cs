@@ -1691,15 +1691,15 @@ public partial class CustomerService : ICustomerService
 
     #endregion
 
-    public virtual async Task InsertUpdateCustomerAsync(Customer customer)
+    public virtual async Task InsertUpdateCustomerAsync(Customer entity)
     {
-        if (customer.Id.Equals(default))
+        if (entity.Id.Equals(default))
         {
-            await this.InsertCustomerAsync(customer);
+            await this.InsertCustomerAsync(entity);
         }
         else
         {
-            await this.UpdateCustomerAsync(customer);
+            await this.UpdateCustomerAsync(entity);
         }
     }
 
