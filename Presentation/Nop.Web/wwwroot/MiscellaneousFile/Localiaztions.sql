@@ -1,15 +1,15 @@
 EXEC sp_AddLocalization 
-@ResourceName = 'Admin.Staffs.TeacherSearchModel.Field.FirstName',
+@ResourceName = 'Admin.Students.StudentSearchModel.Field.FirstName',
 @ResourceValue = 'Student''s Name'
 GO
 
 EXEC sp_AddLocalization 
-@ResourceName = 'Admin.Staffs.TeacherSearchModel.Field.LastName',
+@ResourceName = 'Admin.Students.StudentSearchModel.Field.LastName',
 @ResourceValue = 'Father''s Name'
 GO
 
 EXEC sp_AddLocalization 
-@ResourceName = 'Admin.Staffs.TeacherSearchModel.Field.Active',
+@ResourceName = 'Admin.Students.StudentSearchModel.Field.Active',
 @ResourceValue = 'Active Options'
 GO
 
@@ -217,6 +217,18 @@ GO
 EXEC sp_AddLocalization 
 @ResourceName = 'admin.Teachers.addnew',
 @ResourceValue = 'Add New Teacher'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Common.Active',
+@ResourceValue = 'Active'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Common.InActive',
+@ResourceValue = 'In Active'
 GO
 
 

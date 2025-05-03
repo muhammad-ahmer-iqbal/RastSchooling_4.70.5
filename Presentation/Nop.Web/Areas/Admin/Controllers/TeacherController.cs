@@ -111,11 +111,16 @@ namespace Nop.Web.Areas.Admin.Controllers
             await _teacherExtensionService.InsertUpdateTeacherExtensionAsync(teacherExtension);
 
             var teacherRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.TeachersRoleName);
-            await _customerService.AddCustomerRoleMappingAsync(new CustomerCustomerRoleMapping()
+            var existingRole = await _customerService.GetCustomerRolesAsync(entity);
+            if (!existingRole.Any(x => x.Id == teacherRole.Id))
             {
-                CustomerId = entity.Id,
-                CustomerRoleId = teacherRole.Id,
-            });
+                //already assigned
+                await _customerService.AddCustomerRoleMappingAsync(new CustomerCustomerRoleMapping()
+                {
+                    CustomerId = entity.Id,
+                    CustomerRoleId = teacherRole.Id,
+                });
+            }
 
             return entity;
         }

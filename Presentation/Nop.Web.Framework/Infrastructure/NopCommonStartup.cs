@@ -7,6 +7,7 @@ using Nop.Core.Infrastructure;
 using Nop.Data;
 using Nop.Web.Framework.Infrastructure.Extensions;
 using Nop.Web.Framework.Mvc.Routing;
+using Newtonsoft.Json;
 
 namespace Nop.Web.Framework.Infrastructure;
 
@@ -84,24 +85,30 @@ public partial class NopCommonStartup : INopStartup
             string[] files = _fileProvider.GetFiles(directoryPath);
             try
             {
-                var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
-                // Loop through each file and read its text
-                foreach (string filePath in files.OrderBy(x => _fileProvider.GetFileNameWithoutExtension(x)))
+                if (files?.Any() ?? false)
                 {
-                    if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
+                    files = files.OrderBy(x => _fileProvider.GetFileNameWithoutExtension(x)).ToArray();
+                    var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
+                    // Loop through each file and read its text
+                    foreach (string filePath in files)
                     {
-                        var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
-                        foreach (var content in Regex.Split(fileContent, "GO" + Environment.NewLine, RegexOptions.IgnoreCase))
+                        if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
                         {
-                            if (!string.IsNullOrEmpty(content))
+                            var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
+                            var fileContentList = Regex.Split(fileContent, "GO" + Environment.NewLine, RegexOptions.IgnoreCase);
+                            await _logger.InsertLogAsync(Core.Domain.Logging.LogLevel.Debug, $"File content: {JsonConvert.SerializeObject(fileContentList)}");
+                            foreach (var content in fileContentList)
                             {
-                                try
+                                if (!string.IsNullOrEmpty(content))
                                 {
-                                    await _dataProvider.ExecuteNonQueryAsync(content);
-                                }
-                                catch (Exception ex)
-                                {
-                                    await _logger.WarningAsync($"Error on running script at {filePath}: {ex.Message}", ex);
+                                    try
+                                    {
+                                        await _dataProvider.ExecuteNonQueryAsync(content);
+                                    }
+                                    catch (Exception ex)
+                                    {
+                                        await _logger.WarningAsync($"Error on running script at {filePath}: {ex.Message}", ex);
+                                    }
                                 }
                             }
                         }
