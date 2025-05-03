@@ -1,6 +1,6 @@
-IF EXISTS (SELECT * FROM CustomerRole WHERE Id NOT IN (1,3,4))
+IF EXISTS (SELECT * FROM CustomerRole WHERE SystemName IN ('ForumModerators','Vendors'))
 BEGIN
-DELETE FROM CustomerRole WHERE Id NOT IN (1,3,4)
+DELETE FROM CustomerRole WHERE SystemName IN ('ForumModerators','Vendors')
 END
 GO
 

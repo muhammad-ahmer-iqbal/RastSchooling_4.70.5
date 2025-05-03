@@ -1,4 +1,5 @@
 ﻿using System.Xml;
+using DocumentFormat.OpenXml.Office2021.Excel.RichDataWebImage;
 using Nop.Core;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Blogs;
@@ -165,10 +166,15 @@ public partial class CustomerService : ICustomerService
         string email = null, string username = null, string firstName = null, string lastName = null,
         int dayOfBirth = 0, int monthOfBirth = 0,
         string company = null, string phone = null, string zipPostalCode = null, string ipAddress = null,
-        int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false)
+        int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false,
+        string[] customerRoleSystemNames = default, bool? isActive = default)
     {
-        var customers = await _customerRepository.GetAllPagedAsync(query =>
+        var customers = await _customerRepository.GetAllPagedAsync(async query =>
         {
+            if (isActive.HasValue)
+            {
+                query = query.Where(c => c.Active.Equals(isActive.Value));
+            }
             if (createdFromUtc.HasValue)
                 query = query.Where(c => createdFromUtc.Value <= c.CreatedOnUtc);
             if (createdToUtc.HasValue)
@@ -183,6 +189,18 @@ public partial class CustomerService : ICustomerService
                 query = query.Where(c => vendorId == c.VendorId);
 
             query = query.Where(c => !c.Deleted);
+
+            if (customerRoleSystemNames != null && customerRoleSystemNames.Any())
+            {
+                var allCustomerRoles = await GetAllCustomerRolesDictionaryAsync();
+                var customerRoleIdsToFilter = allCustomerRoles.Where(cr => customerRoleSystemNames.Contains(cr.Value.SystemName)).Select(cr => cr.Key).ToArray();
+                var cIs = new List<int>();
+                if (customerRoleIds?.Any() ?? false)
+                {
+                    cIs.AddRange(customerRoleIds);
+                }
+                customerRoleIds = cIs.Union(customerRoleIdsToFilter).ToArray();
+            }
 
             if (customerRoleIds != null && customerRoleIds.Length > 0)
             {
@@ -304,15 +322,15 @@ public partial class CustomerService : ICustomerService
         //filter customers by billing country
         if (countryId > 0)
             customers = from c in customers
-                join a in _customerAddressRepository.Table on c.BillingAddressId equals a.Id
-                where a.CountryId == countryId
-                select c;
+                        join a in _customerAddressRepository.Table on c.BillingAddressId equals a.Id
+                        where a.CountryId == countryId
+                        select c;
 
         var customersWithCarts = from c in customers
-            join item in items on c.Id equals item.CustomerId
-            //we change ordering for the MySQL engine to avoid problems with the ONLY_FULL_GROUP_BY server property that is set by default since the 5.7.5 version
-            orderby _dataProvider.ConfigurationName == "MySql" ? c.CreatedOnUtc : item.CreatedOnUtc descending
-            select c;
+                                 join item in items on c.Id equals item.CustomerId
+                                 //we change ordering for the MySQL engine to avoid problems with the ONLY_FULL_GROUP_BY server property that is set by default since the 5.7.5 version
+                                 orderby _dataProvider.ConfigurationName == "MySql" ? c.CreatedOnUtc : item.CreatedOnUtc descending
+                                 select c;
 
         return await customersWithCarts.Distinct().ToPagedListAsync(pageIndex, pageSize);
     }
@@ -398,8 +416,8 @@ public partial class CustomerService : ICustomerService
             return null;
 
         var query = from c in _customerRepository.Table
-            where customerGuids.Contains(c.CustomerGuid)
-            select c;
+                    where customerGuids.Contains(c.CustomerGuid)
+                    select c;
         var customers = await query.ToListAsync();
 
         return customers;
@@ -419,9 +437,9 @@ public partial class CustomerService : ICustomerService
             return null;
 
         var query = from c in _customerRepository.Table
-            where c.CustomerGuid == customerGuid
-            orderby c.Id
-            select c;
+                    where c.CustomerGuid == customerGuid
+                    orderby c.Id
+                    select c;
 
         return await _shortTermCacheManager.GetAsync(async () => await query.FirstOrDefaultAsync(), NopCustomerServicesDefaults.CustomerByGuidCacheKey, customerGuid);
     }
@@ -440,9 +458,9 @@ public partial class CustomerService : ICustomerService
             return null;
 
         var query = from c in _customerRepository.Table
-            orderby c.Id
-            where c.Email == email
-            select c;
+                    orderby c.Id
+                    where c.Email == email
+                    select c;
         var customer = await query.FirstOrDefaultAsync();
 
         return customer;
@@ -462,9 +480,9 @@ public partial class CustomerService : ICustomerService
             return null;
 
         var query = from c in _customerRepository.Table
-            orderby c.Id
-            where c.SystemName == systemName
-            select c;
+                    orderby c.Id
+                    where c.SystemName == systemName
+                    select c;
 
         var customer = await _shortTermCacheManager.GetAsync(async () => await query.FirstOrDefaultAsync(), NopCustomerServicesDefaults.CustomerBySystemNameCacheKey, systemName);
 
@@ -561,9 +579,9 @@ public partial class CustomerService : ICustomerService
             return null;
 
         var query = from c in _customerRepository.Table
-            orderby c.Id
-            where c.Username == username
-            select c;
+                    orderby c.Id
+                    where c.Username == username
+                    select c;
         var customer = await query.FirstOrDefaultAsync();
 
         return customer;
@@ -679,28 +697,28 @@ public partial class CustomerService : ICustomerService
         var guestRole = await GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.GuestsRoleName);
 
         var allGuestCustomers = from guest in _customerRepository.Table
-            join ccm in _customerCustomerRoleMappingRepository.Table on guest.Id equals ccm.CustomerId
-            where ccm.CustomerRoleId == guestRole.Id
-            select guest;
+                                join ccm in _customerCustomerRoleMappingRepository.Table on guest.Id equals ccm.CustomerId
+                                where ccm.CustomerRoleId == guestRole.Id
+                                select guest;
 
         var guestsToDelete = from guest in _customerRepository.Table
-            join g in allGuestCustomers on guest.Id equals g.Id
-            from sCart in _shoppingCartRepository.Table.Where(sci => sci.CustomerId == guest.Id).DefaultIfEmpty()
-            from order in _orderRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from blogComment in _blogCommentRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from newsComment in _newsCommentRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from productReview in _productReviewRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from productReviewHelpfulness in _productReviewHelpfulnessRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from pollVotingRecord in _pollVotingRecordRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from forumTopic in _forumTopicRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            from forumPost in _forumPostRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
-            where (!onlyWithoutShoppingCart || sCart == null) &&
-                  order == null && blogComment == null && newsComment == null && productReview == null && productReviewHelpfulness == null &&
-                  pollVotingRecord == null && forumTopic == null && forumPost == null &&
-                  !guest.IsSystemAccount &&
-                  (createdFromUtc == null || guest.CreatedOnUtc > createdFromUtc) &&
-                  (createdToUtc == null || guest.CreatedOnUtc < createdToUtc)
-            select new { CustomerId = guest.Id };
+                             join g in allGuestCustomers on guest.Id equals g.Id
+                             from sCart in _shoppingCartRepository.Table.Where(sci => sci.CustomerId == guest.Id).DefaultIfEmpty()
+                             from order in _orderRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from blogComment in _blogCommentRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from newsComment in _newsCommentRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from productReview in _productReviewRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from productReviewHelpfulness in _productReviewHelpfulnessRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from pollVotingRecord in _pollVotingRecordRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from forumTopic in _forumTopicRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             from forumPost in _forumPostRepository.Table.Where(o => o.CustomerId == guest.Id).DefaultIfEmpty()
+                             where (!onlyWithoutShoppingCart || sCart == null) &&
+                                   order == null && blogComment == null && newsComment == null && productReview == null && productReviewHelpfulness == null &&
+                                   pollVotingRecord == null && forumTopic == null && forumPost == null &&
+                                   !guest.IsSystemAccount &&
+                                   (createdFromUtc == null || guest.CreatedOnUtc > createdFromUtc) &&
+                                   (createdToUtc == null || guest.CreatedOnUtc < createdToUtc)
+                             select new { CustomerId = guest.Id };
 
         await using var tmpGuests = await _dataProvider.CreateTempDataStorageAsync("tmp_guestsToDelete", guestsToDelete);
         await using var tmpAddresses = await _dataProvider.CreateTempDataStorageAsync("tmp_guestsAddressesToDelete",
@@ -1212,9 +1230,9 @@ public partial class CustomerService : ICustomerService
         var key = _staticCacheManager.PrepareKeyForDefaultCache(NopCustomerServicesDefaults.CustomerRolesBySystemNameCacheKey, systemName);
 
         var query = from cr in _customerRoleRepository.Table
-            orderby cr.Id
-            where cr.SystemName == systemName
-            select cr;
+                    orderby cr.Id
+                    where cr.SystemName == systemName
+                    select cr;
 
         var customerRole = await _staticCacheManager.GetAsync(key, async () => await query.FirstOrDefaultAsync());
 
@@ -1612,9 +1630,9 @@ public partial class CustomerService : ICustomerService
     public virtual async Task<IList<Address>> GetAddressesByCustomerIdAsync(int customerId)
     {
         var query = from address in _customerAddressRepository.Table
-            join cam in _customerAddressMappingRepository.Table on address.Id equals cam.AddressId
-            where cam.CustomerId == customerId
-            select address;
+                    join cam in _customerAddressMappingRepository.Table on address.Id equals cam.AddressId
+                    where cam.CustomerId == customerId
+                    select address;
 
         return await _shortTermCacheManager.GetAsync(async () => await query.ToListAsync(), NopCustomerServicesDefaults.CustomerAddressesCacheKey, customerId);
     }
@@ -1634,9 +1652,9 @@ public partial class CustomerService : ICustomerService
             return null;
 
         var query = from address in _customerAddressRepository.Table
-            join cam in _customerAddressMappingRepository.Table on address.Id equals cam.AddressId
-            where cam.CustomerId == customerId && address.Id == addressId
-            select address;
+                    join cam in _customerAddressMappingRepository.Table on address.Id equals cam.AddressId
+                    where cam.CustomerId == customerId && address.Id == addressId
+                    select address;
 
         return await _shortTermCacheManager.GetAsync(async () => await query.FirstOrDefaultAsync(), NopCustomerServicesDefaults.CustomerAddressCacheKey, customerId, addressId);
     }
@@ -1672,6 +1690,46 @@ public partial class CustomerService : ICustomerService
     }
 
     #endregion
+
+    public virtual async Task InsertUpdateCustomerAsync(Customer customer)
+    {
+        if (customer.Id.Equals(default))
+        {
+            await this.InsertCustomerAsync(customer);
+        }
+        else
+        {
+            await this.UpdateCustomerAsync(customer);
+        }
+    }
+
+    public virtual async Task<bool> IsStudentAsync(Customer customer, bool onlyActiveCustomerRoles = true)
+    {
+        return await IsInCustomerRoleAsync(customer, NopCustomerDefaults.StudentsRoleName, onlyActiveCustomerRoles);
+    }
+
+    public virtual async Task<bool> IsTeacherAsync(Customer customer, bool onlyActiveCustomerRoles = true)
+    {
+        return await IsInCustomerRoleAsync(customer, NopCustomerDefaults.TeachersRoleName, onlyActiveCustomerRoles);
+    }
+
+    public virtual async Task<Customer> GetStudentByIdAsync(int id)
+    {
+        var customer = await this.GetStudentByIdAsync(id);
+
+        return customer is not null && await this.IsStudentAsync(customer)
+            ? customer
+            : default;
+    }
+
+    public virtual async Task<Customer> GetTeacherByIdAsync(int id)
+    {
+        var customer = await this.GetStudentByIdAsync(id);
+
+        return customer is not null && await this.IsTeacherAsync(customer)
+            ? customer
+            : default;
+    }
 
     #endregion
 }

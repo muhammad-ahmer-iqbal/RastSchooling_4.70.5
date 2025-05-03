@@ -69,22 +69,22 @@ public partial class NopCommonStartup : INopStartup
         //configure PDF
         application.UseNopPdf();
 
-        //this.RunPreScriptAsync();
+        this.RunPreScriptAsync();
     }
 
     private async void RunPreScriptAsync()
     {
-        var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
-        var _logger = EngineContext.Current.Resolve<Services.Logging.ILogger>();
         var _fileProvider = EngineContext.Current.Resolve<INopFileProvider>();
         string directoryPath = _fileProvider.MapPath(@"wwwroot/MiscellaneousFile");
         // Check if the directory exists
         if (_fileProvider.DirectoryExists(directoryPath))
         {
+            var _logger = EngineContext.Current.Resolve<Services.Logging.ILogger>();
             // Get all files in the directory
             string[] files = _fileProvider.GetFiles(directoryPath);
             try
             {
+                var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
                 // Loop through each file and read its text
                 foreach (string filePath in files)
                 {

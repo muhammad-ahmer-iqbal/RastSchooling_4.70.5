@@ -31,6 +31,8 @@ public static partial class NopCustomerDefaults
     /// Gets a system name of 'vendors' customer role
     /// </summary>
     public static string VendorsRoleName => "Vendors";
+    public static string StudentsRoleName => "Students";
+    public static string TeachersRoleName => "Teachers";
 
     #endregion
 

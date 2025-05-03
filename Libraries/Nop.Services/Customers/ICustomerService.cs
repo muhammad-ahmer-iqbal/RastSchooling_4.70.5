@@ -46,7 +46,8 @@ public partial interface ICustomerService
         string email = null, string username = null, string firstName = null, string lastName = null,
         int dayOfBirth = 0, int monthOfBirth = 0,
         string company = null, string phone = null, string zipPostalCode = null, string ipAddress = null,
-        int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false);
+        int pageIndex = 0, int pageSize = int.MaxValue, bool getOnlyTotalCount = false,
+        string[] customerRoleSystemNames = default, bool? isActive = default);
 
     /// <summary>
     /// Gets online customers
@@ -647,4 +648,11 @@ public partial interface ICustomerService
     Task InsertCustomerAddressAsync(Customer customer, Address address);
 
     #endregion
+
+    Task InsertUpdateCustomerAsync(Customer customer);
+    Task<bool> IsStudentAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+    Task<bool> IsTeacherAsync(Customer customer, bool onlyActiveCustomerRoles = true);
+    Task<Customer> GetStudentByIdAsync(int id);
+    Task<Customer> GetTeacherByIdAsync(int id);
+
 }

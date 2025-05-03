@@ -310,6 +310,15 @@ public partial class CommonHelper
         return date;
     }
 
+    public static T1? ReplaceWithNullDefaults<T1>(T1 value)
+            where T1 : struct
+    {
+        return value.Equals(default(T1))
+            ? default(T1?)
+            : value;
+    }
+
+
     #endregion
 
     #region Properties

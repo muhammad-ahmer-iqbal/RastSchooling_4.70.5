@@ -983,5 +983,16 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
     }
 
+    public virtual async Task PrepareActiveOptionsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null)
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        items.Add(new SelectListItem(await _localizationService.GetResourceAsync("Admin.Common.Active"), "1"));
+        items.Add(new SelectListItem(await _localizationService.GetResourceAsync("Admin.Common.InActive"), "2"));
+
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
+    }
+
     #endregion
 }

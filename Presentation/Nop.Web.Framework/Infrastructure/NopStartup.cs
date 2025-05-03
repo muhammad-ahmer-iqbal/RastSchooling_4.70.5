@@ -47,6 +47,7 @@ using Nop.Services.Shipping;
 using Nop.Services.Shipping.Date;
 using Nop.Services.Shipping.Pickup;
 using Nop.Services.Stores;
+using Nop.Services.Students;
 using Nop.Services.Tax;
 using Nop.Services.Themes;
 using Nop.Services.Topics;
@@ -234,6 +235,8 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IVideoService, VideoService>();
         services.AddScoped<INopUrlHelper, NopUrlHelper>();
         services.AddScoped<IWidgetModelFactory, WidgetModelFactory>();
+        //new servies
+        services.AddScoped<IStudentExtensionService, StudentExtensionService>();
 
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));
@@ -299,12 +302,12 @@ public partial class NopStartup : INopStartup
         //event consumers
         var consumers = typeFinder.FindClassesOfType(typeof(IConsumer<>)).ToList();
         foreach (var consumer in consumers)
-        foreach (var findInterface in consumer.FindInterfaces((type, criteria) =>
-                 {
-                     var isMatch = type.IsGenericType && ((Type)criteria).IsAssignableFrom(type.GetGenericTypeDefinition());
-                     return isMatch;
-                 }, typeof(IConsumer<>)))
-            services.AddScoped(findInterface, consumer);
+            foreach (var findInterface in consumer.FindInterfaces((type, criteria) =>
+                     {
+                         var isMatch = type.IsGenericType && ((Type)criteria).IsAssignableFrom(type.GetGenericTypeDefinition());
+                         return isMatch;
+                     }, typeof(IConsumer<>)))
+                services.AddScoped(findInterface, consumer);
 
         //XML sitemap
         services.AddScoped<IXmlSiteMap, XmlSiteMap>();

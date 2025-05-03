@@ -57,6 +57,8 @@ public partial class StandardPermissionProvider : IPermissionProvider
     public static readonly PermissionRecord HtmlEditorManagePictures = new() { Name = "Admin area. HTML Editor. Manage pictures", SystemName = "HtmlEditor.ManagePictures", Category = "Configuration" };
     public static readonly PermissionRecord ManageScheduleTasks = new() { Name = "Admin area. Manage Schedule Tasks", SystemName = "ManageScheduleTasks", Category = "Configuration" };
     public static readonly PermissionRecord ManageAppSettings = new() { Name = "Admin area. Manage App Settings", SystemName = "ManageAppSettings", Category = "Configuration" };
+    //new permission
+    public static readonly PermissionRecord ManageStudents = new() { Name = "Admin area. Manage Students", SystemName = "ManageStudents", Category = "Configuration" };
 
     //public store permissions
     public static readonly PermissionRecord DisplayPrices = new() { Name = "Public store. Display Prices", SystemName = "DisplayPrices", Category = "PublicStore" };
@@ -129,7 +131,8 @@ public partial class StandardPermissionProvider : IPermissionProvider
             EnableWishlist,
             PublicStoreAllowNavigation,
             AccessClosedStore,
-            EnableMultiFactorAuthentication
+            EnableMultiFactorAuthentication,
+            ManageStudents
         };
     }
 

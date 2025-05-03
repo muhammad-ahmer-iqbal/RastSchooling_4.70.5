@@ -250,57 +250,57 @@ public partial class CustomerController : BasePublicController
             {
                 case AttributeControlType.DropdownList:
                 case AttributeControlType.RadioList:
-                {
-                    var ctrlAttributes = form[controlId];
-                    if (!StringValues.IsNullOrEmpty(ctrlAttributes))
                     {
-                        var selectedAttributeId = int.Parse(ctrlAttributes);
-                        if (selectedAttributeId > 0)
-                            attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
-                                attribute, selectedAttributeId.ToString());
-                    }
-                }
-                    break;
-                case AttributeControlType.Checkboxes:
-                {
-                    var cblAttributes = form[controlId];
-                    if (!StringValues.IsNullOrEmpty(cblAttributes))
-                    {
-                        foreach (var item in cblAttributes.ToString().Split(_separator, StringSplitOptions.RemoveEmptyEntries))
+                        var ctrlAttributes = form[controlId];
+                        if (!StringValues.IsNullOrEmpty(ctrlAttributes))
                         {
-                            var selectedAttributeId = int.Parse(item);
+                            var selectedAttributeId = int.Parse(ctrlAttributes);
                             if (selectedAttributeId > 0)
                                 attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
                                     attribute, selectedAttributeId.ToString());
                         }
                     }
-                }
+                    break;
+                case AttributeControlType.Checkboxes:
+                    {
+                        var cblAttributes = form[controlId];
+                        if (!StringValues.IsNullOrEmpty(cblAttributes))
+                        {
+                            foreach (var item in cblAttributes.ToString().Split(_separator, StringSplitOptions.RemoveEmptyEntries))
+                            {
+                                var selectedAttributeId = int.Parse(item);
+                                if (selectedAttributeId > 0)
+                                    attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
+                                        attribute, selectedAttributeId.ToString());
+                            }
+                        }
+                    }
                     break;
                 case AttributeControlType.ReadonlyCheckboxes:
-                {
-                    //load read-only (already server-side selected) values
-                    var attributeValues = await _customerAttributeService.GetAttributeValuesAsync(attribute.Id);
-                    foreach (var selectedAttributeId in attributeValues
-                                 .Where(v => v.IsPreSelected)
-                                 .Select(v => v.Id)
-                                 .ToList())
                     {
-                        attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
-                            attribute, selectedAttributeId.ToString());
+                        //load read-only (already server-side selected) values
+                        var attributeValues = await _customerAttributeService.GetAttributeValuesAsync(attribute.Id);
+                        foreach (var selectedAttributeId in attributeValues
+                                     .Where(v => v.IsPreSelected)
+                                     .Select(v => v.Id)
+                                     .ToList())
+                        {
+                            attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
+                                attribute, selectedAttributeId.ToString());
+                        }
                     }
-                }
                     break;
                 case AttributeControlType.TextBox:
                 case AttributeControlType.MultilineTextbox:
-                {
-                    var ctrlAttributes = form[controlId];
-                    if (!StringValues.IsNullOrEmpty(ctrlAttributes))
                     {
-                        var enteredText = ctrlAttributes.ToString().Trim();
-                        attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
-                            attribute, enteredText);
+                        var ctrlAttributes = form[controlId];
+                        if (!StringValues.IsNullOrEmpty(ctrlAttributes))
+                        {
+                            var enteredText = ctrlAttributes.ToString().Trim();
+                            attributesXml = _customerAttributeParser.AddAttribute(attributesXml,
+                                attribute, enteredText);
+                        }
                     }
-                }
                     break;
                 case AttributeControlType.Datepicker:
                 case AttributeControlType.ColorSquares:
@@ -426,6 +426,10 @@ public partial class CustomerController : BasePublicController
 
         if (await _customerService.IsRegisteredAsync(customer))
         {
+            if (await _permissionService.AuthorizeAsync(StandardPermissionProvider.AccessAdminPanel))
+            {
+                return RedirectToAction("Index", "Home", new { area = AreaNames.ADMIN });
+            }
             var fullName = await _customerService.GetCustomerFullNameAsync(customer);
             var message = await _localizationService.GetResourceAsync("Account.Login.AlreadyLogin");
             _notificationService.SuccessNotification(string.Format(message, _htmlEncoder.Encode(fullName)));
@@ -458,26 +462,26 @@ public partial class CustomerController : BasePublicController
             switch (loginResult)
             {
                 case CustomerLoginResults.Successful:
-                {
-                    var customer = _customerSettings.UsernamesEnabled
-                        ? await _customerService.GetCustomerByUsernameAsync(customerUserName)
-                        : await _customerService.GetCustomerByEmailAsync(customerEmail);
-
-                    return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, model.RememberMe);
-                }
-                case CustomerLoginResults.MultiFactorAuthenticationRequired:
-                {
-                    var customerMultiFactorAuthenticationInfo = new CustomerMultiFactorAuthenticationInfo
                     {
-                        UserName = userNameOrEmail,
-                        RememberMe = model.RememberMe,
-                        ReturnUrl = returnUrl
-                    };
-                    await HttpContext.Session.SetAsync(
-                        NopCustomerDefaults.CustomerMultiFactorAuthenticationInfo,
-                        customerMultiFactorAuthenticationInfo);
-                    return RedirectToRoute("MultiFactorVerification");
-                }
+                        var customer = _customerSettings.UsernamesEnabled
+                            ? await _customerService.GetCustomerByUsernameAsync(customerUserName)
+                            : await _customerService.GetCustomerByEmailAsync(customerEmail);
+
+                        return await _customerRegistrationService.SignInCustomerAsync(customer, returnUrl, model.RememberMe);
+                    }
+                case CustomerLoginResults.MultiFactorAuthenticationRequired:
+                    {
+                        var customerMultiFactorAuthenticationInfo = new CustomerMultiFactorAuthenticationInfo
+                        {
+                            UserName = userNameOrEmail,
+                            RememberMe = model.RememberMe,
+                            ReturnUrl = returnUrl
+                        };
+                        await HttpContext.Session.SetAsync(
+                            NopCustomerDefaults.CustomerMultiFactorAuthenticationInfo,
+                            customerMultiFactorAuthenticationInfo);
+                        return RedirectToRoute("MultiFactorVerification");
+                    }
                 case CustomerLoginResults.CustomerNotExist:
                     ModelState.AddModelError("", await _localizationService.GetResourceAsync("Account.Login.WrongCredentials.CustomerNotExist"));
                     break;
