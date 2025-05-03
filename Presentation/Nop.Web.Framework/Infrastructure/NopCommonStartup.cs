@@ -86,7 +86,7 @@ public partial class NopCommonStartup : INopStartup
             {
                 var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
                 // Loop through each file and read its text
-                foreach (string filePath in files)
+                foreach (string filePath in files.OrderBy(x => _fileProvider.GetFileNameWithoutExtension(x)))
                 {
                     if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
                     {

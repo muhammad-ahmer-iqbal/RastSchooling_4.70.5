@@ -8,13 +8,10 @@ GO
 
 
 CREATE PROCEDURE sp_AddLocalization
-	-- Add the parameters for the stored procedure here
 	@ResourceName VARCHAR(MAX),
 	@ResourceValue VARCHAR(MAX)
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
 	IF @ResourceName = '' OR @ResourceValue = ''
@@ -33,4 +30,7 @@ BEGIN
 	END
 END
 GO
+
+
+
 

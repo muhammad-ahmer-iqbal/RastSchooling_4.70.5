@@ -59,6 +59,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
     public static readonly PermissionRecord ManageAppSettings = new() { Name = "Admin area. Manage App Settings", SystemName = "ManageAppSettings", Category = "Configuration" };
     //new permission
     public static readonly PermissionRecord ManageStudents = new() { Name = "Admin area. Manage Students", SystemName = "ManageStudents", Category = "Configuration" };
+    public static readonly PermissionRecord ManageTeachers = new() { Name = "Admin area. Manage Teachers", SystemName = "ManageTeachers", Category = "Configuration" };
 
     //public store permissions
     public static readonly PermissionRecord DisplayPrices = new() { Name = "Public store. Display Prices", SystemName = "DisplayPrices", Category = "PublicStore" };
@@ -132,7 +133,8 @@ public partial class StandardPermissionProvider : IPermissionProvider
             PublicStoreAllowNavigation,
             AccessClosedStore,
             EnableMultiFactorAuthentication,
-            ManageStudents
+            ManageStudents,
+            ManageTeachers,
         };
     }
 

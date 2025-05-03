@@ -22,6 +22,7 @@ using Nop.Core.Domain.ScheduleTasks;
 using Nop.Core.Domain.Security;
 using Nop.Core.Domain.Seo;
 using Nop.Core.Domain.Shipping;
+using Nop.Core.Domain.Staffs;
 using Nop.Core.Domain.Stores;
 using Nop.Core.Domain.Students;
 using Nop.Core.Domain.Tax;
@@ -59,6 +60,7 @@ using Nop.Web.Areas.Admin.Models.Polls;
 using Nop.Web.Areas.Admin.Models.Settings;
 using Nop.Web.Areas.Admin.Models.Shipping;
 using Nop.Web.Areas.Admin.Models.ShoppingCart;
+using Nop.Web.Areas.Admin.Models.Staffs;
 using Nop.Web.Areas.Admin.Models.Stores;
 using Nop.Web.Areas.Admin.Models.Students;
 using Nop.Web.Areas.Admin.Models.Tasks;
@@ -113,6 +115,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateVendorsMaps();
         CreateWarehouseMaps();
         CreateStudentsMaps();
+        CreateStaffsMaps();
 
         //add some generic mapping rules
         this.Internal().ForAllMaps((mapConfiguration, map) =>
@@ -1751,6 +1754,17 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateMap<StudentExtension, StudentModel>()
             .ForMember(a => a.Id, b => b.Ignore());
         CreateMap<StudentModel, StudentExtension>()
+            .ForMember(a => a.Id, b => b.Ignore());
+    }
+
+    protected virtual void CreateStaffsMaps()
+    {
+        CreateMap<Customer, TeacherModel>();
+        CreateMap<TeacherModel, Customer>();
+
+        CreateMap<TeacherExtension, TeacherModel>()
+            .ForMember(a => a.Id, b => b.Ignore());
+        CreateMap<TeacherModel, TeacherExtension>()
             .ForMember(a => a.Id, b => b.Ignore());
     }
 

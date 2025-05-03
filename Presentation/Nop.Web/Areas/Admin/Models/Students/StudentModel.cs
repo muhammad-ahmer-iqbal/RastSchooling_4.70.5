@@ -7,9 +7,6 @@ namespace Nop.Web.Areas.Admin.Models.Students
 {
     public partial record StudentModel : BaseNopEntityModel
     {
-        public StudentModel()
-        {
-        }
 
         [NopResourceDisplayName("Admin.Students.StudentModel.Fields.MonthlyFee")]
         public int MonthlyFee { get; set; }

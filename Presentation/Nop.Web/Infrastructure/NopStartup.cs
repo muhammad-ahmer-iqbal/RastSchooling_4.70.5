@@ -84,6 +84,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<Areas.Admin.Factories.IWidgetModelFactory, Areas.Admin.Factories.WidgetModelFactory>();
         //new factories
         services.AddScoped<IStudentModelFactory, StudentModelFactory>();
+        services.AddScoped<ITeacherModelFactory, TeacherModelFactory>();
 
         //factories
         services.AddScoped<Factories.IAddressModelFactory, Factories.AddressModelFactory>();

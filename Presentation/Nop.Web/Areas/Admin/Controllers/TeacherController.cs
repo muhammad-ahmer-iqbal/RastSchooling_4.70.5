@@ -1,32 +1,32 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
-using Nop.Core.Domain.Students;
+using Nop.Core.Domain.Staffs;
 using Nop.Services.Customers;
 using Nop.Services.Localization;
 using Nop.Services.Messages;
 using Nop.Services.Security;
-using Nop.Services.Students;
+using Nop.Services.Staffs;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Customers;
-using Nop.Web.Areas.Admin.Models.Students;
+using Nop.Web.Areas.Admin.Models.Staffs;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
 using ILogger = Nop.Services.Logging.ILogger;
 
 namespace Nop.Web.Areas.Admin.Controllers
 {
-    public class StudentController : BaseAdminController
+    public class TeacherController : BaseAdminController
     {
         #region Fields
 
         protected readonly IPermissionService _permissionService;
         protected readonly ILocalizationService _localizationService;
         protected readonly INotificationService _notificationService;
-        protected readonly IStudentModelFactory _studentModelFactory;
+        protected readonly ITeacherModelFactory _teacherModelFactory;
         protected readonly ICustomerService _customerService;
-        protected readonly IStudentExtensionService _studentExtensionService;
+        protected readonly ITeacherExtensionService _teacherExtensionService;
         protected readonly ILogger _logger;
         protected readonly CustomerSettings _customerSettings;
         protected readonly ICustomerRegistrationService _customerRegistrationService;
@@ -35,13 +35,13 @@ namespace Nop.Web.Areas.Admin.Controllers
 
         #region Ctor
 
-        public StudentController(
+        public TeacherController(
             IPermissionService permissionService,
             ILocalizationService localizationService,
             INotificationService notificationService,
-            IStudentModelFactory studentModelFactory,
+            ITeacherModelFactory teacherModelFactory,
             ICustomerService customerService,
-            IStudentExtensionService studentExtensionService,
+            ITeacherExtensionService teacherExtensionService,
             ILogger logger,
             CustomerSettings customerSettings,
             ICustomerRegistrationService customerRegistrationService
@@ -50,9 +50,9 @@ namespace Nop.Web.Areas.Admin.Controllers
             _permissionService = permissionService;
             _localizationService = localizationService;
             _notificationService = notificationService;
-            _studentModelFactory = studentModelFactory;
+            _teacherModelFactory = teacherModelFactory;
             _customerService = customerService;
-            _studentExtensionService = studentExtensionService;
+            _teacherExtensionService = teacherExtensionService;
             _logger = logger;
             _customerSettings = customerSettings;
             _customerRegistrationService = customerRegistrationService;
@@ -62,44 +62,38 @@ namespace Nop.Web.Areas.Admin.Controllers
 
         #region Utilities
 
-        private async Task ValidatorAsync(StudentModel model)
+        private async Task ValidatorAsync(TeacherModel model)
         {
             ArgumentNullException.ThrowIfNull(nameof(model));
 
             if (string.IsNullOrEmpty(model.FirstName))
             {
-                ModelState.AddModelError(nameof(model.FirstName), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.FirstName.Required"));
+                ModelState.AddModelError(nameof(model.FirstName), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.FirstName.Required"));
             }
 
             if (string.IsNullOrEmpty(model.LastName))
             {
-                ModelState.AddModelError(nameof(model.LastName), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.LastName.Required"));
+                ModelState.AddModelError(nameof(model.LastName), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.LastName.Required"));
             }
 
             if (string.IsNullOrEmpty(model.Email))
             {
-                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.Email.Required"));
+                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.Email.Required"));
             }
             else if (!CommonHelper.IsValidEmail(model.Email))
             {
-                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.Email.InValid"));
+                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.Email.InValid"));
             }
             else if (!model.Id.Equals(default)
                 && await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
                 && existingCustomer is not null &&
                 !existingCustomer.Id.Equals(model.Id))
             {
-                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.Email.AlreadyInUse"));
-            }
-
-            if (model.DateOfBirth.HasValue
-                && model.DateOfBirth.Value.Date < DateTime.Today)
-            {
-                ModelState.AddModelError(nameof(model.DateOfBirth), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.DateOfBirth.InValid"));
+                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.Email.AlreadyInUse"));
             }
         }
 
-        private async Task<Customer> InsertUpdateCustomerAsync(StudentModel model, Customer entity)
+        private async Task<Customer> InsertUpdateCustomerAsync(TeacherModel model, Customer entity)
         {
             entity ??= new Customer()
             {
@@ -108,19 +102,19 @@ namespace Nop.Web.Areas.Admin.Controllers
             entity = model.ToEntity(entity);
             await _customerService.InsertUpdateCustomerAsync(entity);
 
-            var studentExtension = await _studentExtensionService.GetStudentExtensionByCustomerIdAsync(entity.Id)
-                ?? new StudentExtension()
+            var teacherExtension = await _teacherExtensionService.GetTeacherExtensionByCustomerIdAsync(entity.Id)
+                ?? new TeacherExtension()
                 {
                     CustomerId = entity.Id
                 };
-            studentExtension = model.ToEntity(studentExtension);
-            await _studentExtensionService.InsertUpdateStudentExtensionAsync(studentExtension);
+            teacherExtension = model.ToEntity(teacherExtension);
+            await _teacherExtensionService.InsertUpdateTeacherExtensionAsync(teacherExtension);
 
-            var studentRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.StudentsRoleName);
+            var teacherRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.TeachersRoleName);
             await _customerService.AddCustomerRoleMappingAsync(new CustomerCustomerRoleMapping()
             {
                 CustomerId = entity.Id,
-                CustomerRoleId = studentRole.Id,
+                CustomerRoleId = teacherRole.Id,
             });
 
             return entity;
@@ -137,37 +131,37 @@ namespace Nop.Web.Areas.Admin.Controllers
 
         public virtual async Task<IActionResult> List()
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
-            var model = await _studentModelFactory.PrepareStudentSearchModelAsync(new StudentSearchModel());
+            var model = await _teacherModelFactory.PrepareTeacherSearchModelAsync(new TeacherSearchModel());
             return View(model);
         }
 
         [HttpPost]
-        public virtual async Task<IActionResult> List(StudentSearchModel searchModel)
+        public virtual async Task<IActionResult> List(TeacherSearchModel searchModel)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return await AccessDeniedDataTablesJson();
 
-            var model = await _studentModelFactory.PrepareStudentListModelAsync(searchModel);
+            var model = await _teacherModelFactory.PrepareTeacherListModelAsync(searchModel);
             return Json(model);
         }
 
         public virtual async Task<IActionResult> Create()
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
-            var model = await _studentModelFactory.PrepareStudentModelAsync(new StudentModel(), null);
+            var model = await _teacherModelFactory.PrepareTeacherModelAsync(new TeacherModel(), null);
             return View(model);
         }
 
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
         [FormValueRequired("save", "save-continue")]
-        public virtual async Task<IActionResult> Create(StudentModel model, bool continueEditing)
+        public virtual async Task<IActionResult> Create(TeacherModel model, bool continueEditing)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
             await ValidatorAsync(model);
@@ -190,31 +184,31 @@ namespace Nop.Web.Areas.Admin.Controllers
                 }
             }
 
-            model = await _studentModelFactory.PrepareStudentModelAsync(model, null);
+            model = await _teacherModelFactory.PrepareTeacherModelAsync(model, null);
             return View(model);
         }
 
         public virtual async Task<IActionResult> Edit(int id)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
-            var entity = await _customerService.GetStudentByIdAsync(id);
+            var entity = await _customerService.GetTeacherByIdAsync(id);
             if (entity == null)
                 return RedirectToAction("List");
 
-            var model = await _studentModelFactory.PrepareStudentModelAsync(null, entity);
+            var model = await _teacherModelFactory.PrepareTeacherModelAsync(null, entity);
             return View(model);
         }
 
         [HttpPost, ParameterBasedOnFormName("save-continue", "continueEditing")]
         [FormValueRequired("save", "save-continue")]
-        public virtual async Task<IActionResult> Edit(StudentModel model, bool continueEditing)
+        public virtual async Task<IActionResult> Edit(TeacherModel model, bool continueEditing)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
-            var entity = await _customerService.GetStudentByIdAsync(model.Id);
+            var entity = await _customerService.GetTeacherByIdAsync(model.Id);
             if (entity == null)
                 return RedirectToAction("List");
 
@@ -239,7 +233,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             }
 
             //if we got this far, something failed, redisplay form
-            model = await _studentModelFactory.PrepareStudentModelAsync(model, entity);
+            model = await _teacherModelFactory.PrepareTeacherModelAsync(model, entity);
 
             return View(model);
         }
@@ -247,11 +241,11 @@ namespace Nop.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> Delete(int id)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
             //try to get a customer with the specified id
-            var entity = await _customerService.GetStudentByIdAsync(id);
+            var entity = await _customerService.GetTeacherByIdAsync(id);
             if (entity == null)
                 return RedirectToAction("List");
 
@@ -277,11 +271,11 @@ namespace Nop.Web.Areas.Admin.Controllers
         [FormValueRequired("changepassword")]
         public virtual async Task<IActionResult> ChangePassword(CustomerModel model)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
             //try to get a customer with the specified id
-            var customer = await _customerService.GetStudentByIdAsync(model.Id);
+            var customer = await _customerService.GetTeacherByIdAsync(model.Id);
             if (customer == null)
                 return RedirectToAction("List");
 

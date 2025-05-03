@@ -8,13 +8,10 @@ GO
 
 
 CREATE PROCEDURE sp_AddCustomerRole
-	-- Add the parameters for the stored procedure here
 	@SystemName VARCHAR(MAX),
 	@Name VARCHAR(MAX)
 AS
 BEGIN
-	-- SET NOCOUNT ON added to prevent extra result sets from
-	-- interfering with SELECT statements.
 	SET NOCOUNT ON;
 
 	IF @SystemName = '' OR @Name = ''
