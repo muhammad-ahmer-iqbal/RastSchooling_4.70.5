@@ -108,8 +108,8 @@ jobs:
 
       # - uses: actions/checkout@v4
 
-      - name: Check direct deploy exists
-        run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
+      # - name: Check direct deploy exists
+      #   run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
         
       - name: Fast FTP for Direct Deploy
         # You may pin to the exact commit or the version.
