@@ -106,7 +106,7 @@ jobs:
           local_dir: ${{env.PUBLISHED_PATH}}
           remote_dir: /
 
-      - uses: actions/checkout@v4
+      # - uses: actions/checkout@v4
 
       - name: Check direct deploy exists
         run: ls -la ${{ env.LOCAL_APP_DATA_PATH }}
