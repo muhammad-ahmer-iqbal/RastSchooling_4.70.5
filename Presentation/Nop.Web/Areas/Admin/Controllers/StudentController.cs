@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+
 using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Students;
@@ -13,6 +14,7 @@ using Nop.Web.Areas.Admin.Models.Customers;
 using Nop.Web.Areas.Admin.Models.Students;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
+
 using ILogger = Nop.Services.Logging.ILogger;
 
 namespace Nop.Web.Areas.Admin.Controllers
@@ -117,6 +119,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             await _studentExtensionService.InsertUpdateStudentExtensionAsync(studentExtension);
 
             var studentRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.StudentsRoleName);
+            var registerRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.RegisteredRoleName);
+
             var existingRole = await _customerService.GetCustomerRolesAsync(entity);
             if (!existingRole.Any(x => x.Id == studentRole.Id))
             {
@@ -125,6 +129,15 @@ namespace Nop.Web.Areas.Admin.Controllers
                 {
                     CustomerId = entity.Id,
                     CustomerRoleId = studentRole.Id,
+                });
+            }
+            if (!existingRole.Any(x => x.Id == registerRole.Id))
+            {
+                //already assigned
+                await _customerService.AddCustomerRoleMappingAsync(new CustomerCustomerRoleMapping()
+                {
+                    CustomerId = entity.Id,
+                    CustomerRoleId = registerRole.Id,
                 });
             }
 
