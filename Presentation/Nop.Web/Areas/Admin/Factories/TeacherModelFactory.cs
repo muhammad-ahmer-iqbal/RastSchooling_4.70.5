@@ -106,7 +106,6 @@ namespace Nop.Web.Areas.Admin.Factories
             }
 
             model.AvailableShifts = (await ShiftEnum.Morning.ToSelectListAsync()).ToList();
-            //model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId)).CurrencyCode;
 
             return model;
         }

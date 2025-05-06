@@ -239,6 +239,7 @@ public partial class NopStartup : INopStartup
         //new servies
         services.AddScoped<IStudentExtensionService, StudentExtensionService>();
         services.AddScoped<ITeacherExtensionService, TeacherExtensionService>();
+        services.AddScoped<IStudentLeaveService, StudentLeaveService>();
 
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));

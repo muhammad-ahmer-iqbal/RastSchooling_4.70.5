@@ -238,3 +238,47 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentModel.Fields.DateOfAdmission',
+@ResourceValue = 'Date of Admission'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentModel.Fields.DateOfAdmission.Required',
+@ResourceValue = 'Date of Admission is required'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentLeaveModel.Field.CustomerId',
+@ResourceValue = 'Student ID'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentLeaveModel.Field.StartDate',
+@ResourceValue = 'Start Date'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentLeaveModel.Field.EndDate',
+@ResourceValue = 'End Date'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.StudentLeave.Info',
+@ResourceValue = 'Student Leaves'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'admin.students.studentleavemodel.addnew',
+@ResourceValue = 'Add New Leave'
+GO
+
+
+
+

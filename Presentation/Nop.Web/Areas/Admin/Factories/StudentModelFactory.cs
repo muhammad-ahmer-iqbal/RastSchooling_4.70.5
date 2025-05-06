@@ -1,4 +1,5 @@
-﻿using Nop.Core.Domain.Customers;
+﻿using Microsoft.Identity.Client;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
@@ -20,6 +21,7 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
         protected readonly ICurrencyService _currencyService;
         protected readonly CurrencySettings _currencySettings;
+        protected readonly IStudentLeaveService _studentLeaveService;
 
         #endregion
 
@@ -31,7 +33,8 @@ namespace Nop.Web.Areas.Admin.Factories
             ILocalizationService localizationService,
             IBaseAdminModelFactory baseAdminModelFactory,
             ICurrencyService currencyService,
-            CurrencySettings currencySettings
+            CurrencySettings currencySettings,
+            IStudentLeaveService studentLeaveService
             )
         {
             _customerService = customerService;
@@ -40,11 +43,14 @@ namespace Nop.Web.Areas.Admin.Factories
             _baseAdminModelFactory = baseAdminModelFactory;
             _currencyService = currencyService;
             _currencySettings = currencySettings;
+            _studentLeaveService = studentLeaveService;
         }
 
         #endregion
 
         #region Methods
+
+        #region Student
 
         public virtual async Task<StudentSearchModel> PrepareStudentSearchModelAsync(StudentSearchModel searchModel)
         {
@@ -97,16 +103,55 @@ namespace Nop.Web.Areas.Admin.Factories
                 var studentExtension = await _studentExtensionService.GetStudentExtensionByCustomerIdAsync(entity.Id);
                 model = studentExtension.ToModel(model);
             }
-
-            if (!excludeProperties)
+            else
             {
-                model.Active = true;
+                if (!excludeProperties)
+                {
+                    model.Active = true;
+                    model.DateOfAdmission = DateTime.Today;
+                }
             }
 
-            model.PrimaryStoreCurrencyCode = (await _currencyService.GetCurrencyByIdAsync(_currencySettings.PrimaryStoreCurrencyId)).CurrencyCode;
+            model.StudentLeaveSearchModel = await this.PrepareStudentLeaveSearchModelAsync(model.StudentLeaveSearchModel);
 
             return model;
         }
+
+        #endregion
+
+        #region Student Leave
+
+        public virtual async Task<StudentLeaveSearchModel> PrepareStudentLeaveSearchModelAsync(StudentLeaveSearchModel searchModel)
+        {
+            ArgumentNullException.ThrowIfNull(nameof(searchModel));
+
+            searchModel.SetGridPageSize();
+
+            return searchModel;
+        }
+        public virtual async Task<StudentLeaveListModel> PrepareStudentLeaveListModelAsync(StudentLeaveSearchModel searchModel)
+        {
+            ArgumentNullException.ThrowIfNull(nameof(searchModel));
+
+            var allEntities = await _studentLeaveService.GetAllStudentLeavesAsync(
+                customerId: searchModel.CustomerId,
+                pageIndex: searchModel.Page - 1,
+                pageSize: searchModel.PageSize);
+
+            var model = await new StudentLeaveListModel().PrepareToGridAsync(searchModel, allEntities, () =>
+            {
+                return allEntities.SelectAwait(async entity =>
+                {
+                    var tempModel = entity.ToModel<StudentLeaveModel>();
+
+                    return tempModel;
+                });
+            });
+
+            return model;
+        }
+
+        #endregion
 
         #endregion
     }

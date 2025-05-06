@@ -1,0 +1,122 @@
+@model StudentModel
+
+<div class="card-body">
+	@await Html.PartialAsync("Table", new DataTablesModel
+{
+	Name = "student-leave-grid",
+	UrlRead = new DataUrl("StudentLeaveList", "Student", new RouteValueDictionary { [nameof(Model.StudentLeaveSearchModel.CustomerId)] = Model.Id }),
+	UrlDelete = new DataUrl("StudentLeaveDelete", "Student", null),
+	Length = Model.StudentLeaveSearchModel.PageSize,
+	LengthMenu = Model.StudentLeaveSearchModel.AvailablePageSizes,
+	ColumnCollection = new List<ColumnProperty>
+	{
+	new ColumnProperty(nameof(StudentLeaveModel.StartDate))
+	{
+	Title = T("Admin.Students.StudentLeaveModel.Field.StartDate").Text,
+	Render = new RenderDate()
+	},
+	new ColumnProperty(nameof(StudentLeaveModel.EndDate))
+	{
+	Title = T("Admin.Students.StudentLeaveModel.Field.EndDate").Text,
+	Render = new RenderDate()
+	},
+	new ColumnProperty(nameof(StudentLeaveModel.Id))
+	{
+	Title = T("Admin.Common.Delete").Text,
+	Width = "100",
+	Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+	ClassName = NopColumnClassDefaults.Button
+	}
+	}
+})
+
+	<div class="card card-default">
+		<div class="card-header">
+			@T("Admin.Students.StudentLeaveModel.AddNew")
+		</div>
+		<div class="card-body">
+			<div class="form-group row">
+				<div class="col-md-3">
+					<nop-label asp-for="StudentLeaveModel.StartDate" />
+				</div>
+				<div class="col-md-9">
+					<nop-editor asp-for="StudentLeaveModel.StartDate" />
+					<span asp-validation-for="StudentLeaveModel.StartDate"></span>
+				</div>
+			</div>
+			<div class="form-group row">
+				<div class="col-md-3">
+					<nop-label asp-for="StudentLeaveModel.EndDate" />
+				</div>
+				<div class="col-md-9">
+					<nop-editor asp-for="StudentLeaveModel.EndDate" />
+					<span asp-validation-for="StudentLeaveModel.EndDate"></span>
+				</div>
+			</div>
+		</div>
+		<div class="card-footer">
+			<div class="row">
+				<button type="button" id="btnAddNewStudentLeave" class="btn btn-primary offset-md-3">
+					@T("admin.common.addnew")
+				</button>
+			</div>
+		</div>
+		<script>
+			$(document).on('click','btnAddNewStudentLeave',function(){
+				var startDate = $('#@Html.IdFor(model => model.StudentLeaveModel.StartDate)');
+				var endDate = $('#@Html.IdFor(model => model.StudentLeaveModel.EndDate)');
+				if (startDate.val() === ''
+					|| endDate.val() === '') 
+				{
+					if(startDate.val() === '')
+					{
+						$("span[data-valmsg-for="@(Html.NameFor(model => model.StudentLeaveModel.StartDate))"]").text("This is required.");
+					}
+					
+					if(endDate.val() === '')
+					{
+						$("span[data-valmsg-for="@(Html.NameFor(model => model.StudentLeaveModel.EndDate))"]").text("This is required.");
+					}
+
+					return;
+				}
+
+
+				$('#btnAddNewStudentLeave').attr('disabled', true);
+
+				var postData = {
+					StartDate: startDate.val(),
+					EndDate: endDate.val(),
+					CustomerId: @Model.Id
+				};
+
+				addAntiForgeryToken(postData);
+
+				$.ajax({
+					type: "POST",
+					url: "@Url.Action("StudentLeaveAdd", "Student")",
+					data: postData,
+					success: function (data, textStatus, jqXHR) {
+						if(data.success)
+						{
+							updateTable('#student-leave-grid');
+
+							startDate.val('');
+							endDate.val('');
+						}
+						else
+						{
+							alert(data.error);
+						}
+					},
+					error: function (jqXHR, textStatus, errorThrown) {
+						// Handle error
+					},
+					complete: function (jqXHR, textStatus) {
+						$('#btnAddNewStudentLeave').attr('disabled', false);
+					}
+				});
+			})
+		</script>
+	</div>
+</div>

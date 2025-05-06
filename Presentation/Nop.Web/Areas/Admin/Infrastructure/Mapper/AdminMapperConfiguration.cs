@@ -1755,6 +1755,9 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(a => a.Id, b => b.Ignore());
         CreateMap<StudentModel, StudentExtension>()
             .ForMember(a => a.Id, b => b.Ignore());
+
+        CreateMap<StudentLeave, StudentLeaveModel>();
+        CreateMap<StudentLeaveModel, StudentLeave>();
     }
 
     protected virtual void CreateStaffsMaps()

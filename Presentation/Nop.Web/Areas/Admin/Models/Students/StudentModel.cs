@@ -7,6 +7,11 @@ namespace Nop.Web.Areas.Admin.Models.Students
 {
     public partial record StudentModel : BaseNopEntityModel
     {
+        public StudentModel()
+        {
+            StudentLeaveSearchModel = new StudentLeaveSearchModel();
+            StudentLeaveModel = new StudentLeaveModel();
+        }
 
         [NopResourceDisplayName("Admin.Students.StudentModel.Fields.MonthlyFee")]
         public int MonthlyFee { get; set; }
@@ -32,6 +37,12 @@ namespace Nop.Web.Areas.Admin.Models.Students
         [DataType(DataType.Password)]
         public string Password { get; set; }
 
-        public string PrimaryStoreCurrencyCode { get; set; }
+        [UIHint("DateNullable")]
+        [NopResourceDisplayName("Admin.Students.StudentModel.Fields.DateOfAdmission")]
+        public DateTime? DateOfAdmission { get; set; }
+
+
+        public StudentLeaveSearchModel StudentLeaveSearchModel { get; set; }
+        public StudentLeaveModel StudentLeaveModel { get; set; }
     }
 }

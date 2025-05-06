@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-
+using Microsoft.Extensions.Azure;
 using Nop.Core;
+using Nop.Core.Domain.ApiResponseModel;
+using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Students;
 using Nop.Services.Customers;
@@ -10,9 +12,11 @@ using Nop.Services.Security;
 using Nop.Services.Students;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
+using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Areas.Admin.Models.Customers;
 using Nop.Web.Areas.Admin.Models.Students;
 using Nop.Web.Framework.Controllers;
+using Nop.Web.Framework.Mvc;
 using Nop.Web.Framework.Mvc.Filters;
 
 using ILogger = Nop.Services.Logging.ILogger;
@@ -32,6 +36,7 @@ namespace Nop.Web.Areas.Admin.Controllers
         protected readonly ILogger _logger;
         protected readonly CustomerSettings _customerSettings;
         protected readonly ICustomerRegistrationService _customerRegistrationService;
+        protected readonly IStudentLeaveService _studentLeaveService;
 
         #endregion
 
@@ -46,7 +51,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             IStudentExtensionService studentExtensionService,
             ILogger logger,
             CustomerSettings customerSettings,
-            ICustomerRegistrationService customerRegistrationService
+            ICustomerRegistrationService customerRegistrationService,
+            IStudentLeaveService studentLeaveService
             )
         {
             _permissionService = permissionService;
@@ -58,6 +64,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             _logger = logger;
             _customerSettings = customerSettings;
             _customerRegistrationService = customerRegistrationService;
+            _studentLeaveService = studentLeaveService;
         }
 
         #endregion
@@ -98,6 +105,11 @@ namespace Nop.Web.Areas.Admin.Controllers
                 && model.DateOfBirth.Value.Date < DateTime.Today)
             {
                 ModelState.AddModelError(nameof(model.DateOfBirth), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.DateOfBirth.InValid"));
+            }
+
+            if (!model.DateOfAdmission.HasValue)
+            {
+                ModelState.AddModelError(nameof(model.DateOfAdmission), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.DateOfAdmission.Required"));
             }
         }
 
@@ -208,7 +220,7 @@ namespace Nop.Web.Areas.Admin.Controllers
                 }
             }
 
-            model = await _studentModelFactory.PrepareStudentModelAsync(model, null);
+            model = await _studentModelFactory.PrepareStudentModelAsync(model, null, true);
             return View(model);
         }
 
@@ -257,7 +269,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             }
 
             //if we got this far, something failed, redisplay form
-            model = await _studentModelFactory.PrepareStudentModelAsync(model, entity);
+            model = await _studentModelFactory.PrepareStudentModelAsync(model, entity, true);
 
             return View(model);
         }
@@ -299,11 +311,11 @@ namespace Nop.Web.Areas.Admin.Controllers
                 return AccessDeniedView();
 
             //try to get a customer with the specified id
-            var customer = await _customerService.GetStudentByIdAsync(model.Id);
-            if (customer == null)
+            var entity = await _customerService.GetStudentByIdAsync(model.Id);
+            if (entity == null)
                 return RedirectToAction("List");
 
-            var changePassRequest = new ChangePasswordRequest(customer.Email,
+            var changePassRequest = new ChangePasswordRequest(entity.Email,
                 false, _customerSettings.DefaultPasswordFormat, model.Password);
             var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
             if (changePassResult.Success)
@@ -312,9 +324,66 @@ namespace Nop.Web.Areas.Admin.Controllers
                 foreach (var error in changePassResult.Errors)
                     _notificationService.ErrorNotification(error);
 
-            return RedirectToAction("Edit", new { id = customer.Id });
+            return RedirectToAction("Edit", new { id = entity.Id });
         }
 
+        #region Student Leave
+
+        [HttpPost]
+        public virtual async Task<IActionResult> StudentLeaveList(StudentLeaveSearchModel searchModel)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+                return await AccessDeniedDataTablesJson();
+
+            //prepare model
+            var model = await _studentModelFactory.PrepareStudentLeaveListModelAsync(searchModel);
+            return Json(model);
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public virtual async Task<IActionResult> StudentLeaveAdd(StudentLeaveModel model)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageProducts))
+                return AccessDeniedView();
+
+            try
+            {
+                if (model.CustomerId.Equals(default))
+                    throw new ArgumentNullException(nameof(model.CustomerId));
+                else if (!model.StartDate.HasValue
+                    || !model.EndDate.HasValue)
+                {
+                    throw new ArgumentNullException("Start and End Date is required");
+                }
+
+                var entity = model.ToEntity<StudentLeave>();
+                await _studentLeaveService.InsertStudentLeaveAsync(entity);
+
+                return Ok(new ApiResponseModel(success: true, message: await _localizationService.GetResourceAsync("Admin.Common.Added")));
+            }
+            catch (Exception exc)
+            {
+                return Ok(new ApiResponseModel(success: true, message: await _localizationService.GetResourceAsync("Admin.Common.Added")));
+            }
+        }
+
+
+        [HttpPost]
+        public virtual async Task<IActionResult> StudentLeaveDelete(int id)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageProducts))
+                return await AccessDeniedDataTablesJson();
+
+            var entity = await _studentLeaveService.GetStudentLeaveByIdAsync(id)
+                ?? throw new ArgumentException("No record found with the specified id");
+
+            await _studentLeaveService.DeleteStudentLeaveAsync(entity);
+
+            return new NullJsonResult();
+        }
+
+        #endregion
 
         #endregion
     }
