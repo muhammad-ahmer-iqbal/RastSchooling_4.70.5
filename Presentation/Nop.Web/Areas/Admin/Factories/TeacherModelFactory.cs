@@ -121,9 +121,9 @@ namespace Nop.Web.Areas.Admin.Factories
 
             model.AvailableShifts = (await ShiftEnum.Morning.ToSelectListAsync()).ToList();
             model.AvailableDepartments = allDepartments.ToSelectList(x => (x as Department).Name).ToList();
-            model.AvailableDesignations = allDesignations.ToSelectList(x => (x as Department).Name).ToList();
+            model.AvailableDesignations = allDesignations.ToSelectList(x => (x as Designation).Name).ToList();
 
-            var defaultItem = new SelectListItem(text: await _localizationService.GetResourceAsync("admin.common.select"), value: "0");
+            var defaultItem = new SelectListItem(text: await _localizationService.GetResourceAsync("admin.common.select"), value: string.Empty);
             model.AvailableDepartments.Insert(0, defaultItem);
             model.AvailableDesignations.Insert(0, defaultItem);
 

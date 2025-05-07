@@ -316,4 +316,10 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'admin.staffs.designations.fields.name',
+@ResourceValue = 'Designation Name'
+GO
+
+
 

@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.Net;
 using System.Text.RegularExpressions;
+using Newtonsoft.Json;
 using Nop.Core.Infrastructure;
 
 namespace Nop.Core;
@@ -316,6 +317,12 @@ public partial class CommonHelper
         return value.Equals(default(T1))
             ? default(T1?)
             : value;
+    }
+
+    public static T Clone<T>(T source)
+    {
+        var serialized = JsonConvert.SerializeObject(source);
+        return JsonConvert.DeserializeObject<T>(serialized);
     }
 
 
