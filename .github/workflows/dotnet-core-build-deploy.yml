@@ -7,8 +7,8 @@ env:
   LOCAL_APP_OFFLINE_PATH: ./DirectDeploy/App_offline
 
 on:
-  push:
-    branches: [ "master" ]
+  # push:
+    # branches: [ "master" ]
   workflow_dispatch:
 
 permissions:
