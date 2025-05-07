@@ -113,6 +113,12 @@
                             },
                             new ColumnProperty(nameof(StudentModel.Id))
                             {
+                            Title = T("admin.common.view").Text,
+                            ClassName = NopColumnClassDefaults.CenterAll,
+                            Render = new RenderCustom("openViewMode"),
+                            },
+                            new ColumnProperty(nameof(StudentModel.Id))
+                            {
                             Title = T("Admin.Common.Edit").Text,
                             Width = "50",
                             ClassName =  NopColumnClassDefaults.Button,
@@ -120,6 +126,15 @@
                             }
                             }
                         })
+
+                        <script>
+                            function openViewMode(data){
+                                const URL = '@Url.Action("Edit", "Student")';
+
+                                var viewModeUrl = `${URL}/${data}?viewMode=true`;
+                                return `<a class="@NopButtonClassDefaults.Default genericMPOpener" href="${viewModeUrl}"><i class="far fa-eye"></i>@T("admin.common.view")</a>`;
+                            }
+                        </script>
                     </div>
                 </div>
             </div>

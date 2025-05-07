@@ -7,7 +7,37 @@
     NopHtml.SetActiveMenuItemSystemName("Teachers");
 }
 
-<form method="post">
+@if (ViewBag.ViewMode)
+{
+    <style>
+        .main-sidebar,
+        .main-header,
+        .main-footer,
+        .hide-on-viewmode {
+            display: none !important;
+        }
+
+        .content-wrapper {
+            margin: 0px !important;
+        }
+
+        #teacher-form .content-header{
+            display: none !important;
+        }
+        
+        #teacher-form section.content{
+            padding:10px !important;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function(){
+            $('input, textarea, select, button').prop('disabled', true);
+        })
+    </script>
+}
+
+<form method="post" id="teacher-form">
     <div class="content-header clearfix">
         <h1 class="float-left">
             @T("Admin.Teachers.Edit")

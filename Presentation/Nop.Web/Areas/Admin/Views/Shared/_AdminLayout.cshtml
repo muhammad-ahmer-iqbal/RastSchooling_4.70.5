@@ -37,6 +37,16 @@
     <title>@adminPageTitle</title>
     <meta http-equiv="Content-type" content="text/html;charset=UTF-8" />
     <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/magnific-popup.min.css" />
+    <script asp-location="Footer" src="https://cdnjs.cloudflare.com/ajax/libs/magnific-popup.js/1.1.0/jquery.magnific-popup.min.js"></script>
+
+    <style>
+        .mfp-iframe-holder .mfp-content {
+            max-width: 1300px !important;
+        }
+    </style>
+
     @NopHtml.GenerateHeadCustom()
 
     @* CSS & Script resources *@
@@ -240,6 +250,23 @@
 
             //enable tooltips
             $('[data-toggle="tooltip"]').tooltip({ placement: 'bottom' });
+        });
+
+            /* magnificPopup query start  */
+        $(document).on('click', '.genericMPOpener', function (e) {
+            e.preventDefault();
+            var that = $(this);
+            if (!$(this).hasClass('MpAdded')) {
+                $(this).addClass('MpAdded');
+                $(this).magnificPopup({
+                    type: 'iframe',
+                    closeOnContentClick: !that.hasClass('bgNoClose'),
+                    modal: that.hasClass('bgNoClose'),
+                    closeBtnInside: false,
+                }).magnificPopup('open');
+            } else {
+                $(this).magnificPopup('open');
+            }
         });
     </script>
 

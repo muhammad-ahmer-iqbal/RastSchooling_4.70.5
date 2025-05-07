@@ -225,7 +225,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             return View(model);
         }
 
-        public virtual async Task<IActionResult> Edit(int id)
+        public virtual async Task<IActionResult> Edit(int id, bool viewMode = default)
         {
             if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
                 return AccessDeniedView();
@@ -234,6 +234,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             if (entity == null)
                 return RedirectToAction("List");
 
+            ViewBag.ViewMode = viewMode;
             var model = await _studentModelFactory.PrepareStudentModelAsync(null, entity);
             return View(model);
         }
