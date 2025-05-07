@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using AutoMapper.Internal;
+
 using Nop.Core.Configuration;
 using Nop.Core.Domain.Affiliates;
 using Nop.Core.Domain.Blogs;
@@ -1769,6 +1770,13 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
             .ForMember(a => a.Id, b => b.Ignore());
         CreateMap<TeacherModel, TeacherExtension>()
             .ForMember(a => a.Id, b => b.Ignore());
+
+
+        CreateMap<Department, DepartmentModel>();
+        CreateMap<DepartmentModel, Department>();
+
+        CreateMap<Designation, DesignationModel>();
+        CreateMap<DesignationModel, Designation>();
     }
 
     #endregion

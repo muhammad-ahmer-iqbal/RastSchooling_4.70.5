@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Azure;
+
 using Nop.Core;
 using Nop.Core.Domain.ApiResponseModel;
 using Nop.Core.Domain.Catalog;
@@ -364,7 +365,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             }
             catch (Exception exc)
             {
-                return Ok(new ApiResponseModel(success: true, message: await _localizationService.GetResourceAsync("Admin.Common.Added")));
+                await _logger.ErrorAsync(exc.Message, exc);
+                return Ok(new ApiResponseModel(success: false, message: exc.Message));
             }
         }
 

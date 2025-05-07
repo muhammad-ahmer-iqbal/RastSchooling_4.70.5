@@ -298,4 +298,16 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Staffs.Departments.Fields.Name',
+@ResourceValue = 'Department Name'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.ContentManagement.Department',
+@ResourceValue = 'Departments'
+GO
+
+
 

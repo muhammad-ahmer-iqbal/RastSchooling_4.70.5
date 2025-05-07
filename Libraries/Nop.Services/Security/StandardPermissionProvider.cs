@@ -60,6 +60,8 @@ public partial class StandardPermissionProvider : IPermissionProvider
     //new permission
     public static readonly PermissionRecord ManageStudents = new() { Name = "Admin area. Manage Students", SystemName = "ManageStudents", Category = "Configuration" };
     public static readonly PermissionRecord ManageTeachers = new() { Name = "Admin area. Manage Teachers", SystemName = "ManageTeachers", Category = "Configuration" };
+    public static readonly PermissionRecord ManageDepartments = new() { Name = "Admin area. Manage Departments", SystemName = "ManageDepartments", Category = "Configuration" };
+    public static readonly PermissionRecord ManageDesignations = new() { Name = "Admin area. Manage Designations", SystemName = "ManageDesignations", Category = "Configuration" };
 
     //public store permissions
     public static readonly PermissionRecord DisplayPrices = new() { Name = "Public store. Display Prices", SystemName = "DisplayPrices", Category = "PublicStore" };
@@ -135,6 +137,8 @@ public partial class StandardPermissionProvider : IPermissionProvider
             EnableMultiFactorAuthentication,
             ManageStudents,
             ManageTeachers,
+            ManageDepartments,
+            ManageDesignations,
         };
     }
 
