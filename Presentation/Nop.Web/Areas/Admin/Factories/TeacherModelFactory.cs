@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
+
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Staffs;
@@ -36,7 +37,9 @@ namespace Nop.Web.Areas.Admin.Factories
             ILocalizationService localizationService,
             IBaseAdminModelFactory baseAdminModelFactory,
             ICurrencyService currencyService,
-            CurrencySettings currencySettings
+            CurrencySettings currencySettings,
+            IDesignationService designationService,
+            IDepartmentService departmentService
             )
         {
             _customerService = customerService;
@@ -45,6 +48,8 @@ namespace Nop.Web.Areas.Admin.Factories
             _baseAdminModelFactory = baseAdminModelFactory;
             _currencyService = currencyService;
             _currencySettings = currencySettings;
+            _designationService = designationService;
+            _departmentService = departmentService;
         }
 
         #endregion

@@ -310,4 +310,10 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.ContentManagement.Designation',
+@ResourceValue = 'Designations'
+GO
+
+
 

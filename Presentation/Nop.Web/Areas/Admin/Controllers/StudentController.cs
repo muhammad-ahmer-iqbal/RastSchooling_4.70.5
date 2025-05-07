@@ -345,7 +345,7 @@ namespace Nop.Web.Areas.Admin.Controllers
         [IgnoreAntiforgeryToken]
         public virtual async Task<IActionResult> StudentLeaveAdd(StudentLeaveModel model)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageProducts))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
                 return AccessDeniedView();
 
             try
@@ -374,7 +374,7 @@ namespace Nop.Web.Areas.Admin.Controllers
         [HttpPost]
         public virtual async Task<IActionResult> StudentLeaveDelete(int id)
         {
-            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageProducts))
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
                 return await AccessDeniedDataTablesJson();
 
             var entity = await _studentLeaveService.GetStudentLeaveByIdAsync(id)

@@ -20,7 +20,6 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly ICurrencyService _currencyService;
         protected readonly CurrencySettings _currencySettings;
         protected readonly IDesignationService _designationService;
-        protected readonly IDesignationService _DesignationService;
 
         #endregion
 
@@ -32,7 +31,8 @@ namespace Nop.Web.Areas.Admin.Factories
             ILocalizationService localizationService,
             IBaseAdminModelFactory baseAdminModelFactory,
             ICurrencyService currencyService,
-            CurrencySettings currencySettings
+            CurrencySettings currencySettings,
+            IDesignationService designationService
             )
         {
             _customerService = customerService;
@@ -41,6 +41,7 @@ namespace Nop.Web.Areas.Admin.Factories
             _baseAdminModelFactory = baseAdminModelFactory;
             _currencyService = currencyService;
             _currencySettings = currencySettings;
+            _designationService = designationService;
         }
 
         #endregion
@@ -59,7 +60,7 @@ namespace Nop.Web.Areas.Admin.Factories
         {
             ArgumentNullException.ThrowIfNull(nameof(searchModel));
 
-            var allEntities = await _DesignationService.GetAllDesignationsAsync(
+            var allEntities = await _designationService.GetAllDesignationsAsync(
                 pageIndex: searchModel.Page - 1,
                 pageSize: searchModel.PageSize);
 

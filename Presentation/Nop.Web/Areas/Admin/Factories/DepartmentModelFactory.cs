@@ -23,7 +23,6 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
         protected readonly ICurrencyService _currencyService;
         protected readonly CurrencySettings _currencySettings;
-        protected readonly IDesignationService _designationService;
         protected readonly IDepartmentService _departmentService;
 
         #endregion
@@ -36,7 +35,8 @@ namespace Nop.Web.Areas.Admin.Factories
             ILocalizationService localizationService,
             IBaseAdminModelFactory baseAdminModelFactory,
             ICurrencyService currencyService,
-            CurrencySettings currencySettings
+            CurrencySettings currencySettings,
+            IDepartmentService departmentService
             )
         {
             _customerService = customerService;
@@ -45,6 +45,7 @@ namespace Nop.Web.Areas.Admin.Factories
             _baseAdminModelFactory = baseAdminModelFactory;
             _currencyService = currencyService;
             _currencySettings = currencySettings;
+            _departmentService = departmentService;
         }
 
         #endregion
