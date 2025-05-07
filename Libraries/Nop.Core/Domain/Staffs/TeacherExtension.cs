@@ -10,5 +10,8 @@
             get => (ShiftEnum)this.ShiftId;
             set { this.ShiftId = (int)value; }
         }
+        public DateTime DateOfJoining { get; set; }
+        public int? DesignationId { get; set; }
+        public int? DepartmentId { get; set; }
     }
 }

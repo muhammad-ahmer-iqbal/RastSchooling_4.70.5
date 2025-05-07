@@ -17,6 +17,11 @@ public partial class RenderDate : IRender
 
     #region Ctor
 
+    public RenderDate(string format)
+    {
+        //set default values
+        Format = format;
+    }
     public RenderDate()
     {
         //set default values

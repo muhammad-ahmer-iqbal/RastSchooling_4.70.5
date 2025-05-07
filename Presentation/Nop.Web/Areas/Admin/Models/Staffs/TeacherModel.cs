@@ -10,6 +10,8 @@ namespace Nop.Web.Areas.Admin.Models.Staffs
         public TeacherModel()
         {
             AvailableShifts = new List<SelectListItem>();
+            AvailableDesignations = new List<SelectListItem>();
+            AvailableDepartments = new List<SelectListItem>();
         }
 
         [NopResourceDisplayName("Admin.Staffs.TeacherModel.Fields.Email")]
@@ -35,6 +37,20 @@ namespace Nop.Web.Areas.Admin.Models.Staffs
         [NopResourceDisplayName("Admin.Common.Password")]
         [DataType(DataType.Password)]
         public string Password { get; set; }
+
+        [UIHint("DateNullable")]
+        [NopResourceDisplayName("Admin.Staffs.TeacherModel.Fields.DateOfJoining")]
+        public DateTime? DateOfJoining { get; set; }
+
+
+        [NopResourceDisplayName("Admin.Staffs.TeacherModel.Fields.DesignationId")]
+        public int? DesignationId { get; set; }
+        public IList<SelectListItem> AvailableDesignations { get; set; }
+
+
+        [NopResourceDisplayName("Admin.Staffs.TeacherModel.Fields.DepartmentId")]
+        public int? DepartmentId { get; set; }
+        public IList<SelectListItem> AvailableDepartments { get; set; }
     }
 
 }

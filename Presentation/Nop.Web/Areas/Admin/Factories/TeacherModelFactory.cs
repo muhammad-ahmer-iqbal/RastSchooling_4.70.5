@@ -1,4 +1,5 @@
-﻿using Nop.Core.Domain.Customers;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Staffs;
 using Nop.Services;
@@ -22,6 +23,8 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
         protected readonly ICurrencyService _currencyService;
         protected readonly CurrencySettings _currencySettings;
+        protected readonly IDesignationService _designationService;
+        protected readonly IDepartmentService _departmentService;
 
         #endregion
 
@@ -99,13 +102,25 @@ namespace Nop.Web.Areas.Admin.Factories
                 var teacherExtension = await _teacherExtensionService.GetTeacherExtensionByCustomerIdAsync(entity.Id);
                 model = teacherExtension.ToModel(model);
             }
-
-            if (!excludeProperties)
+            else
             {
-                model.Active = true;
+                if (!excludeProperties)
+                {
+                    model.Active = true;
+                    model.DateOfJoining = DateTime.Today;
+                }
             }
 
+            var allDepartments = await _departmentService.GetAllDepartmentsAsync();
+            var allDesignations = await _designationService.GetAllDesignationsAsync();
+
             model.AvailableShifts = (await ShiftEnum.Morning.ToSelectListAsync()).ToList();
+            model.AvailableDepartments = allDepartments.ToSelectList(x => (x as Department).Name).ToList();
+            model.AvailableDesignations = allDesignations.ToSelectList(x => (x as Department).Name).ToList();
+
+            var defaultItem = new SelectListItem(text: await _localizationService.GetResourceAsync("admin.common.select"), value: "0");
+            model.AvailableDepartments.Insert(0, defaultItem);
+            model.AvailableDesignations.Insert(0, defaultItem);
 
             return model;
         }

@@ -13,12 +13,12 @@
 	new ColumnProperty(nameof(StudentLeaveModel.StartDate))
 	{
 	Title = T("Admin.Students.StudentLeaveModel.Field.StartDate").Text,
-	Render = new RenderDate()
+	Render = new RenderDate("d/MM/yyyy")
 	},
 	new ColumnProperty(nameof(StudentLeaveModel.EndDate))
 	{
 	Title = T("Admin.Students.StudentLeaveModel.Field.EndDate").Text,
-	Render = new RenderDate()
+	Render = new RenderDate("d/MM/yyyy")
 	},
 	new ColumnProperty(nameof(StudentLeaveModel.Id))
 	{
@@ -62,20 +62,22 @@
 			</div>
 		</div>
 		<script>
-			$(document).on('click','btnAddNewStudentLeave',function(){
+			$(document).on('click', '#btnAddNewStudentLeave' ,function(){
 				var startDate = $('#@Html.IdFor(model => model.StudentLeaveModel.StartDate)');
 				var endDate = $('#@Html.IdFor(model => model.StudentLeaveModel.EndDate)');
 				if (startDate.val() === ''
-					|| endDate.val() === '') 
+					|| endDate.val() === '')
 				{
 					if(startDate.val() === '')
 					{
-						$("span[data-valmsg-for="@(Html.NameFor(model => model.StudentLeaveModel.StartDate))"]").text("This is required.");
+						$("span[data-valmsg-for='@Html.NameFor(model => model.StudentLeaveModel.StartDate)']").text("This is required.");
+						$("span[data-valmsg-for='@Html.NameFor(model => model.StudentLeaveModel.StartDate)']").addClass("field-validation-error");
+
 					}
-					
 					if(endDate.val() === '')
 					{
-						$("span[data-valmsg-for="@(Html.NameFor(model => model.StudentLeaveModel.EndDate))"]").text("This is required.");
+						$("span[data-valmsg-for='@Html.NameFor(model => model.StudentLeaveModel.EndDate)']").text("This is required.");
+						$("span[data-valmsg-for='@Html.NameFor(model => model.StudentLeaveModel.EndDate)']").addClass("field-validation-error");
 					}
 
 					return;

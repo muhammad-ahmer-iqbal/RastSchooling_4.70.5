@@ -25,14 +25,17 @@
 					@await Html.PartialAsync("_CreateOrUpdate.Info", Model)
 				</nop-card>
 
-				<nop-card asp-name="student-leave-info"
-						  asp-icon="fas fa-info"
-						  asp-title="@T("Admin.StudentLeave.Info")"
-						  asp-hide-block-attribute-name="@hideStudentLeaveInfoBlockAttributeName"
-						  asp-hide="@hideStudentLeaveInfoBlock"
-						  asp-advanced="false">
-					@await Html.PartialAsync("_CreateOrUpdate.StudentLeave.Info", Model)
-				</nop-card>
+				@if (Model.Id > 0)
+				{
+					<nop-card asp-name="student-leave-info"
+							  asp-icon="fas fa-info"
+							  asp-title="@T("Admin.StudentLeave.Info")"
+							  asp-hide-block-attribute-name="@hideStudentLeaveInfoBlockAttributeName"
+							  asp-hide="@hideStudentLeaveInfoBlock"
+							  asp-advanced="false">
+						@await Html.PartialAsync("_CreateOrUpdate.StudentLeave.Info", Model)
+					</nop-card>
+				}
 			</nop-cards>
 		</div>
 	</div>

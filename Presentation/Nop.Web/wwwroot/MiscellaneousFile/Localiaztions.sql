@@ -280,5 +280,22 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Staffs.TeacherModel.Fields.DateOfJoining',
+@ResourceValue = 'Date of Joining'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Staffs.TeacherModel.Fields.DesignationId',
+@ResourceValue = 'Select Designation'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Staffs.TeacherModel.Fields.DepartmentId',
+@ResourceValue = 'Select Department'
+GO
+
 
 
