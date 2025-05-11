@@ -1,16 +1,16 @@
-@model StudentModel
+@model FormModel
 
 @{
     //page title
-    ViewBag.PageTitle = T("Admin.Students.AddNew").Text;
+    ViewBag.PageTitle = T("Admin.Forms.AddNew").Text;
     //active menu item (system name)
-    NopHtml.SetActiveMenuItemSystemName("Students");
+    NopHtml.SetActiveMenuItemSystemName("Forms");
 }
 
-<form method="post" id="student-create-form">
+<form method="post" id="add-new-event">
     <div class="content-header clearfix">
         <h1 class="float-left">
-            @T("Admin.Students.AddNew")
+            @T("Admin.Forms.AddNew")
             <small>
                 <i class="fas fa-arrow-circle-left"></i>
                 <a asp-action="List">@T("Admin.Common.BackToList")</a>

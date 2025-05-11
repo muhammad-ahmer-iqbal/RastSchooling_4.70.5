@@ -62,6 +62,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
     public static readonly PermissionRecord ManageTeachers = new() { Name = "Admin area. Manage Teachers", SystemName = "ManageTeachers", Category = "Configuration" };
     public static readonly PermissionRecord ManageDepartments = new() { Name = "Admin area. Manage Departments", SystemName = "ManageDepartments", Category = "Configuration" };
     public static readonly PermissionRecord ManageDesignations = new() { Name = "Admin area. Manage Designations", SystemName = "ManageDesignations", Category = "Configuration" };
+    public static readonly PermissionRecord ManageForms = new() { Name = "Admin area. Manage Forms", SystemName = "ManageForms", Category = "Configuration" };
 
     //public store permissions
     public static readonly PermissionRecord DisplayPrices = new() { Name = "Public store. Display Prices", SystemName = "DisplayPrices", Category = "PublicStore" };
@@ -139,6 +140,7 @@ public partial class StandardPermissionProvider : IPermissionProvider
             ManageTeachers,
             ManageDepartments,
             ManageDesignations,
+            ManageForms,
         };
     }
 

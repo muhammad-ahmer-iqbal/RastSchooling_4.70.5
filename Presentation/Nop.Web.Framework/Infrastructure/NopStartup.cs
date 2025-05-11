@@ -24,6 +24,7 @@ using Nop.Services.Directory;
 using Nop.Services.Discounts;
 using Nop.Services.Events;
 using Nop.Services.ExportImport;
+using Nop.Services.Forms;
 using Nop.Services.Forums;
 using Nop.Services.Gdpr;
 using Nop.Services.Helpers;
@@ -242,6 +243,9 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IStudentLeaveService, StudentLeaveService>();
         services.AddScoped<IDesignationService, DesignationService>();
         services.AddScoped<IDepartmentService, DepartmentService>();
+        services.AddScoped<IFormService, FormService>();
+        services.AddScoped<IFormFieldService, FormFieldService>();
+        services.AddScoped<IFormFieldOptionService, FormFieldOptionService>();
 
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));

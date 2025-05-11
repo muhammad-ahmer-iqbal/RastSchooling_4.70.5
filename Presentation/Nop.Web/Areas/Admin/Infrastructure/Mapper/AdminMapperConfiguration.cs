@@ -10,6 +10,7 @@ using Nop.Core.Domain.Configuration;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
 using Nop.Core.Domain.Discounts;
+using Nop.Core.Domain.Forms;
 using Nop.Core.Domain.Forums;
 using Nop.Core.Domain.Gdpr;
 using Nop.Core.Domain.Localization;
@@ -48,6 +49,7 @@ using Nop.Web.Areas.Admin.Models.Customers;
 using Nop.Web.Areas.Admin.Models.Directory;
 using Nop.Web.Areas.Admin.Models.Discounts;
 using Nop.Web.Areas.Admin.Models.ExternalAuthentication;
+using Nop.Web.Areas.Admin.Models.Forms;
 using Nop.Web.Areas.Admin.Models.Forums;
 using Nop.Web.Areas.Admin.Models.Localization;
 using Nop.Web.Areas.Admin.Models.Logging;
@@ -117,6 +119,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
         CreateWarehouseMaps();
         CreateStudentsMaps();
         CreateStaffsMaps();
+        CreateFormsMaps();
 
         //add some generic mapping rules
         this.Internal().ForAllMaps((mapConfiguration, map) =>
@@ -1777,6 +1780,19 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
         CreateMap<Designation, DesignationModel>();
         CreateMap<DesignationModel, Designation>();
+    }
+
+    protected virtual void CreateFormsMaps()
+    {
+        CreateMap<Form, FormModel>()
+            .ForMember(fm => fm.Lock, f => f.Ignore());
+        CreateMap<FormModel, Form>();
+
+        CreateMap<FormField, FormFieldModel>();
+        CreateMap<FormFieldModel, FormField>();
+
+        CreateMap<FormFieldOption, FormFieldOptionModel>();
+        CreateMap<FormFieldOptionModel, FormFieldOption>();
     }
 
     #endregion

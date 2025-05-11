@@ -322,4 +322,109 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.Name',
+@ResourceValue = 'Name'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.Name.Required',
+@ResourceValue = 'Name'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormSearchModel.Field.Name',
+@ResourceValue = 'Name'
+GO
+
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.Lock',
+@ResourceValue = 'Lock'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.ContentManagement.Form',
+@ResourceValue = 'Forms'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.Active',
+@ResourceValue = 'Active'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.AddNew',
+@ResourceValue = 'Add New Form'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.Edit',
+@ResourceValue = 'Edit Form'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.Field.Name',
+@ResourceValue = 'Label'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.Field.DisplayOrder',
+@ResourceValue = 'Display Order'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.Field.ControlTypeId',
+@ResourceValue = 'Select Control Type'
+GO
+
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.Field.FormId',
+@ResourceValue = 'Form Name'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.Field.Required',
+@ResourceValue = 'Required'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldOptionModel.Field.Name',
+@ResourceValue = 'Option Name'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldOptionModel.Field.DisplayOrder',
+@ResourceValue = 'Display Order'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldOptionModel.Field.FormFieldId',
+@ResourceValue = 'Label Name'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.Field.Options',
+@ResourceValue = 'Options'
+GO
+
+
+
 
