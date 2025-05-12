@@ -26,11 +26,13 @@ namespace Nop.Web.Areas.Admin.Factories
 
         public FormModelFactory(
             IFormService formService,
-            IBaseAdminModelFactory baseAdminModelFactory
+            IFormFieldService formFieldService,
+            IFormFieldOptionService formFieldOptionService
             )
         {
             _formService = formService;
-            _baseAdminModelFactory = baseAdminModelFactory;
+            _formFieldService = formFieldService;
+            _formFieldOptionService = formFieldOptionService;
         }
 
         #endregion

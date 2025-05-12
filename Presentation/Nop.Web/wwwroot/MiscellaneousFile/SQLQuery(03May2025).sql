@@ -20,11 +20,10 @@ ShiftId INT NOT NULL
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM PermissionRecord WHERE SystemName = 'ManageTeachers')
-BEGIN
-INSERT INTO PermissionRecord (Name,SystemName,Category) VALUES
-('Admin area. Manage Teachers', 'ManageTeachers', 'Configuration')
-END
+EXEC sp_AddPermission
+@Name = 'Admin area. Manage Teachers', 
+@SystemName = 'ManageTeachers', 
+@Category = 'Configuration'
 GO
 
 

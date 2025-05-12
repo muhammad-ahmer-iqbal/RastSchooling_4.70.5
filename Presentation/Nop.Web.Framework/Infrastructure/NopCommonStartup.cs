@@ -89,25 +89,29 @@ public partial class NopCommonStartup : INopStartup
                 {
                     files = files.OrderBy(x => _fileProvider.GetFileNameWithoutExtension(x)).ToArray();
                     var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
+                    if (!await _dataProvider.DatabaseExistsAsync())
+                    {
+                        return;
+                    }
                     // Loop through each file and read its text
                     foreach (string filePath in files)
                     {
                         if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
                         {
                             var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
-                            var fileContentList = Regex.Split(fileContent, "GO" + Environment.NewLine, RegexOptions.IgnoreCase);
-                            await _logger.InsertLogAsync(Core.Domain.Logging.LogLevel.Debug, $"File content: {JsonConvert.SerializeObject(fileContentList)}");
+                            var fileContentList = Regex.Split(fileContent, Environment.NewLine + "GO" + Environment.NewLine, RegexOptions.IgnoreCase);
                             foreach (var content in fileContentList)
                             {
                                 if (!string.IsNullOrEmpty(content))
                                 {
+
                                     try
                                     {
                                         await _dataProvider.ExecuteNonQueryAsync(content);
                                     }
                                     catch (Exception ex)
                                     {
-                                        await _logger.WarningAsync($"Error on running script at {filePath}: {ex.Message}", ex);
+                                        await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {content},\n{ex.Message}", ex);
                                     }
                                 }
                             }

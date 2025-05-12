@@ -50,18 +50,17 @@ ALTER TABLE TeacherExtension ADD DepartmentId INT NULL FOREIGN KEY REFERENCES De
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM PermissionRecord WHERE SystemName = 'ManageDepartments')
-BEGIN
-INSERT INTO PermissionRecord (Name,SystemName,Category) VALUES
-('Admin area. Manage Departments', 'ManageDepartments', 'Configuration')
-END
+EXEC sp_AddPermission
+@Name = 'Admin area. Manage Departments', 
+@SystemName = 'ManageDepartments', 
+@Category = 'Configuration'
 GO
 
-IF NOT EXISTS (SELECT * FROM PermissionRecord WHERE SystemName = 'ManageDesignations')
-BEGIN
-INSERT INTO PermissionRecord (Name,SystemName,Category) VALUES
-('Admin area. Manage Designations', 'ManageDesignations', 'Configuration')
-END
+
+EXEC sp_AddPermission
+@Name = 'Admin area. Manage Designations', 
+@SystemName = 'ManageDesignations', 
+@Category = 'Configuration'
 GO
 
 

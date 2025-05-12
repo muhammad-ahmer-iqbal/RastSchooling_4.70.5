@@ -21,8 +21,8 @@ BEGIN
 
     IF NOT EXISTS (SELECT * FROM CustomerRole WHERE SystemName = @SystemName)
 	BEGIN
-	INSERT INTO CustomerRole (Name, SystemName, FreeShipping, TaxExempt, Active,IsSystemRole,EnablePasswordLifetime, OverrideTaxDisplayType, DefaultTaxDisplayTypeId,PurchasedWithProductId) VALUES
-	(@Name, @SystemName, 0, 0, 1, 0, 0, 0, 0, 0)
+		INSERT INTO CustomerRole (Name, SystemName, FreeShipping, TaxExempt, Active,IsSystemRole,EnablePasswordLifetime, OverrideTaxDisplayType, DefaultTaxDisplayTypeId,PurchasedWithProductId) VALUES
+		(@Name, @SystemName, 0, 0, 1, 0, 0, 0, 0, 0)
 	END
 END
 GO

@@ -8,11 +8,10 @@ MonthlyFee INT NULL
 END
 GO
 
-IF NOT EXISTS (SELECT * FROM PermissionRecord WHERE SystemName = 'ManageStudents')
-BEGIN
-INSERT INTO PermissionRecord (Name,SystemName,Category) VALUES
-('Admin area. Manage Students', 'ManageStudents', 'Configuration')
-END
+EXEC sp_AddPermission
+@Name = 'Admin area. Manage Students', 
+@SystemName = 'ManageStudents', 
+@Category = 'Configuration'
 GO
 
 EXEC sp_AddCustomerRole

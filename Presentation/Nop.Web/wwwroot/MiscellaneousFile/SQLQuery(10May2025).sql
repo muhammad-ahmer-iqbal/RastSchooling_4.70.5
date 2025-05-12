@@ -9,11 +9,10 @@ END
 GO
 
 
-IF NOT EXISTS (SELECT * FROM PermissionRecord WHERE SystemName = 'ManageForms')
-BEGIN
-INSERT INTO PermissionRecord (Name,SystemName,Category) VALUES
-('Admin area. Manage Forms', 'ManageForms', 'Configuration')
-END
+EXEC sp_AddPermission
+@Name = 'Admin area. Manage Forms', 
+@SystemName = 'ManageForms', 
+@Category = 'Configuration'
 GO
 
 IF OBJECT_ID('FormField') IS NULL
