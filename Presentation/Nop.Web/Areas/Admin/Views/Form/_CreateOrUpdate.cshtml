@@ -4,6 +4,9 @@
 	var customer = await workContext.GetCurrentCustomerAsync();
 	const string hideInfoBlockAttributeName = "FormPage.HideInfoBlock";
 	var hideInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideInfoBlockAttributeName);
+
+	const string hideFormFieldInfoBlockAttributeName = "FormPage.HideFormFieldInfoBlock";
+	var hideFormFieldInfoBlock = await genericAttributeService.GetAttributeAsync<bool>(customer, hideFormFieldInfoBlockAttributeName);
 }
 
 <div asp-validation-summary="All"></div>
@@ -21,6 +24,18 @@
 						  asp-advanced="false">
 					@await Html.PartialAsync("_CreateOrUpdate.Info", Model)
 				</nop-card>
+
+				@if (Model.Id > 0)
+				{
+					<nop-card asp-name="form-field-info"
+							  asp-icon="fas fa-info"
+							  asp-title="@T("Admin.FormField.Info")"
+							  asp-hide-block-attribute-name="@hideFormFieldInfoBlockAttributeName"
+							  asp-hide="@hideFormFieldInfoBlock"
+							  asp-advanced="false">
+						@await Html.PartialAsync("_CreateOrUpdate.FormFieldAddUpdate.Info", Model)
+					</nop-card>
+				}
 			</nop-cards>
 		</div>
 	</div>

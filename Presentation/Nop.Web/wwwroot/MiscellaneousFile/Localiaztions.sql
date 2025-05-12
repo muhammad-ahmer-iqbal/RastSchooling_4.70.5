@@ -385,7 +385,7 @@ GO
 
 EXEC sp_AddLocalization 
 @ResourceName = 'Admin.Forms.FormFieldModel.Field.ControlTypeId',
-@ResourceValue = 'Select Control Type'
+@ResourceValue = 'Control Type'
 GO
 
 
@@ -423,6 +423,20 @@ GO
 EXEC sp_AddLocalization 
 @ResourceName = 'Admin.Forms.FormFieldModel.Field.Options',
 @ResourceValue = 'Options'
+GO
+
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormFieldModel.AddNew',
+@ResourceValue = 'Add New Field'
+GO
+
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.FormField.Info',
+@ResourceValue = 'Field Info'
 GO
 
 

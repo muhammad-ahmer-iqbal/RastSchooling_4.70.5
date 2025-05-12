@@ -13,6 +13,8 @@ using Nop.Web.Framework.Mvc;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 
 using ILogger = Nop.Services.Logging.ILogger;
+using Nop.Core.Domain.Students;
+using Nop.Web.Areas.Admin.Models.Students;
 
 namespace Nop.Web.Areas.Admin.Controllers
 {
@@ -25,6 +27,8 @@ namespace Nop.Web.Areas.Admin.Controllers
         protected readonly INotificationService _notificationService;
         protected readonly IFormModelFactory _formModelFactory;
         protected readonly IFormService _formService;
+        protected readonly IFormFieldService _formFieldService;
+        protected readonly IFormFieldOptionService _formFieldOptionService;
         protected readonly ILogger _logger;
 
         #endregion
@@ -37,6 +41,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             INotificationService notificationService,
             IFormModelFactory formModelFactory,
             IFormService formService,
+            IFormFieldService formFieldService,
+            IFormFieldOptionService formFieldOptionService,
             ILogger logger
             )
         {
@@ -45,6 +51,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             _notificationService = notificationService;
             _formModelFactory = formModelFactory;
             _formService = formService;
+            _formFieldService = formFieldService;
+            _formFieldOptionService = formFieldOptionService;
             _logger = logger;
         }
 
@@ -217,6 +225,76 @@ namespace Nop.Web.Areas.Admin.Controllers
 
             return RedirectToAction("List");
         }
+
+
+        #region Form Field
+
+        [HttpPost]
+        public virtual async Task<IActionResult> FormFieldList(FormFieldSearchModel searchModel)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForms))
+                return await AccessDeniedDataTablesJson();
+
+            //prepare model
+            var model = await _formModelFactory.PrepareFormFieldListModelAsync(searchModel);
+            return Json(model);
+        }
+
+        public virtual async Task<IActionResult> FormFieldAddUpdate(int formId)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForms))
+                return Unauthorized();
+
+            var entity = await _formService.GetFormByIdAsync(formId);
+            if (entity == null)
+                return BadRequest();
+
+            var model = await _formModelFactory.PrepareFormFieldModelAsync(new FormFieldModel(formId: formId), null);
+            var view = await this.RenderPartialViewToStringAsync("_CreateOrUpdate.FormFieldAddUpdate", model);
+
+            return Ok(new ApiResponseModel(success: true, model: new
+            {
+                html = view
+            }));
+        }
+
+        [HttpPost]
+        [IgnoreAntiforgeryToken]
+        public virtual async Task<IActionResult> FormFieldAddUpdate(FormFieldModel model, IFormCollection form)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForms))
+                return AccessDeniedView();
+
+            try
+            {
+                var entity = model.ToEntity<FormField>();
+                await _formFieldService.InsertUpdateFormFieldAsync(entity);
+
+                return Ok(new ApiResponseModel(success: true, message: await _localizationService.GetResourceAsync("Admin.Common.Added")));
+            }
+            catch (Exception exc)
+            {
+                await _logger.ErrorAsync(exc.Message, exc);
+                return Ok(new ApiResponseModel(success: false, message: exc.Message));
+            }
+        }
+
+
+        [HttpPost]
+        public virtual async Task<IActionResult> FormFieldDelete(int id)
+        {
+            if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageStudents))
+                return await AccessDeniedDataTablesJson();
+
+            var entity = await _formFieldService.GetFormFieldByIdAsync(id)
+                ?? throw new ArgumentException("No record found with the specified id");
+
+            await _formFieldService.DeleteFormFieldAsync(entity);
+
+            return new NullJsonResult();
+        }
+
+        #endregion
 
         #endregion
     }

@@ -10,7 +10,6 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         public FormModel()
         {
             FormFieldSearchModel = new FormFieldSearchModel();
-            FormFieldModel = new FormFieldModel();
         }
 
         [NopResourceDisplayName("Admin.Forms.FormModel.Field.Name")]
@@ -23,6 +22,5 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         public bool Active { get; set; }
 
         public FormFieldSearchModel FormFieldSearchModel { get; set; }
-        public FormFieldModel FormFieldModel { get; set; }
     }
 }

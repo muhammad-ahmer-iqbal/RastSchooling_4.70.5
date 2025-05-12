@@ -21,9 +21,12 @@ namespace Nop.Web.Areas.Admin.Factories
         #region Form Field
 
         Task<FormFieldSearchModel> PrepareFormFieldSearchModelAsync(FormFieldSearchModel searchModel);
-
         Task<FormFieldListModel> PrepareFormFieldListModelAsync(FormFieldSearchModel searchModel);
-
+        Task<FormFieldModel> PrepareFormFieldModelAsync(
+                    FormFieldModel model,
+                    FormField entity,
+                    bool excludeProperties = default
+                    );
         #endregion
 
     }

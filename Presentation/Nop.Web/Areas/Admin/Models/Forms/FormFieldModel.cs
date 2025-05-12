@@ -7,6 +7,17 @@ namespace Nop.Web.Areas.Admin.Models.Forms
 {
     public partial record FormFieldModel : BaseNopEntityModel
     {
+        public FormFieldModel()
+        {
+            AvailableControlTypes = new List<SelectListItem>();
+            FormFieldOptionModels = new List<FormFieldOptionModel>();
+        }
+
+        public FormFieldModel(int formId) : this()
+        {
+            FormId = formId;
+        }
+
         [NopResourceDisplayName("Admin.Forms.FormFieldModel.Field.Name")]
         public string Name { get; set; }
 
@@ -19,7 +30,7 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         [NopResourceDisplayName("Admin.Forms.FormFieldModel.Field.Required")]
         public bool Required { get; set; }
 
-        [NopResourceDisplayName("Admin.Forms.FormFieldModel.Field.ControlType")]
+        [NopResourceDisplayName("Admin.Forms.FormFieldModel.Field.ControlTypeId")]
         public int ControlTypeId { get; set; }
         public IList<SelectListItem> AvailableControlTypes { get; set; }
         public ControlTypeEnum ControlType
@@ -27,8 +38,11 @@ namespace Nop.Web.Areas.Admin.Models.Forms
             get => (ControlTypeEnum)this.ControlTypeId;
             set { this.ControlTypeId = (int)value; }
         }
+        public string ControlTypeString { get; set; }
 
         [NopResourceDisplayName("Admin.Forms.FormFieldModel.Field.Options")]
         public string Options { get; set; }
+
+        public IList<FormFieldOptionModel> FormFieldOptionModels { get; set; }
     }
 }

@@ -1,9 +1,4 @@
-﻿using Nop.Core.Domain.Customers;
-using Nop.Core.Domain.Directory;
-using Nop.Services.Customers;
-using Nop.Services.Directory;
-using Nop.Services.Localization;
-using Nop.Services.Forms;
+﻿using Nop.Services.Forms;
 using Nop.Web.Areas.Admin.Models.Forms;
 using Nop.Web.Framework.Models.Extensions;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
@@ -91,8 +86,6 @@ namespace Nop.Web.Areas.Admin.Factories
                 }
             }
 
-            model.FormFieldModel.AvailableControlTypes = (await ControlTypeEnum.TextBox.ToSelectListAsync()).ToList();
-
             model.FormFieldSearchModel = await this.PrepareFormFieldSearchModelAsync(model.FormFieldSearchModel);
 
             return model;
@@ -133,6 +126,33 @@ namespace Nop.Web.Areas.Admin.Factories
                 });
             });
 
+            return model;
+        }
+
+        public virtual async Task<FormFieldModel> PrepareFormFieldModelAsync(
+            FormFieldModel model,
+            FormField entity,
+            bool excludeProperties = default
+            )
+        {
+            if (entity != null)
+            {
+                //fill in model values from the entity
+                model ??= entity.ToModel<FormFieldModel>();
+
+                var fieldOptions = await _formFieldOptionService.GetAllFormFieldOptionsAsync(formFieldId: model.Id);
+                model.FormFieldOptionModels = fieldOptions
+                    .Select(x => x.ToModel<FormFieldOptionModel>())
+                    .ToList();
+            }
+            else
+            {
+                if (!excludeProperties)
+                {
+                }
+            }
+
+            model.AvailableControlTypes = (await ControlTypeEnum.TextBox.ToSelectListAsync()).ToList();
             return model;
         }
 
