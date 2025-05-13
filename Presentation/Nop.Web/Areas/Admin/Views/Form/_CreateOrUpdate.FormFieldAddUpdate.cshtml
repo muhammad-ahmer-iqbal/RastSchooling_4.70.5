@@ -1,4 +1,7 @@
-﻿@model FormFieldModel
+﻿@using Nop.Core.Domain.Forms
+@model FormFieldModel
+
+<input type="hidden" asp-for="FormId" />
 
 <div class="form-group row">
 	<div class="col-md-3">
@@ -39,3 +42,49 @@
 		<span asp-validation-for="ControlTypeId"></span>
 	</div>
 </div>
+
+<div class="form-group row" id="optionsContainer">
+	<div class="col-md-3">
+		<nop-label asp-for="Options" />
+	</div>
+	<div class="col-md-9">
+		<div id="optionList"></div>
+		<button type="button" class="btn btn-info" onclick="addOptionInput()">Add Option</button>
+	</div>
+</div>
+
+<script>
+	function toggleOptions() {
+		const controlType = parseInt($(this).val());
+		const optionsDiv = $('#form-field-card #optionsContainer');
+		if ([@((int)ControlTypeEnum.DropDown), @((int)ControlTypeEnum.RadioButton), @((int)ControlTypeEnum.Checkbox)].includes(controlType)) {
+			//add option only if there is not at least one div
+			if(!$('#optionList').html().trim()){
+				addOptionInput();
+			}
+			optionsDiv.show();
+		} else {
+			optionsDiv.hide();
+			$('.remove-option').click();
+		}
+	}
+
+	function addOptionInput(value = '') {
+		const optionHtml = `
+			<div class="d-flex pb-2 option-input">
+				<input type="text" name="SelectedOptions" class="form-control w-50 mr-2" value="${value}" />
+				<button type="button" class="btn btn-outline-danger remove-option">Remove</button>
+			</div>
+		`;
+		$('#optionList').append(optionHtml);
+	}
+
+	// Remove option input
+	$('#form-field-card').on('click', '.remove-option', function () {
+		$(this).parent().remove();
+	});
+
+	$(document).on('change', '#form-field-card #@Html.IdFor(model => model.ControlTypeId)', toggleOptions);
+	$(document).ready(toggleOptions);
+
+</script>

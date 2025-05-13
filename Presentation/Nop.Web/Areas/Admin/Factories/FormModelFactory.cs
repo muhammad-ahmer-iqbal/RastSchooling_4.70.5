@@ -4,6 +4,7 @@ using Nop.Web.Framework.Models.Extensions;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Core.Domain.Forms;
 using Nop.Services;
+using Nop.Services.Localization;
 
 namespace Nop.Web.Areas.Admin.Factories
 {
@@ -14,6 +15,7 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly IFormService _formService;
         protected readonly IFormFieldService _formFieldService;
         protected readonly IFormFieldOptionService _formFieldOptionService;
+        protected readonly ILocalizationService _localizationService;
 
         #endregion
 
@@ -22,12 +24,14 @@ namespace Nop.Web.Areas.Admin.Factories
         public FormModelFactory(
             IFormService formService,
             IFormFieldService formFieldService,
-            IFormFieldOptionService formFieldOptionService
+            IFormFieldOptionService formFieldOptionService,
+            ILocalizationService localizationService
             )
         {
             _formService = formService;
             _formFieldService = formFieldService;
             _formFieldOptionService = formFieldOptionService;
+            _localizationService = localizationService;
         }
 
         #endregion
@@ -118,6 +122,7 @@ namespace Nop.Web.Areas.Admin.Factories
                 return allEntities.SelectAwait(async entity =>
                 {
                     var tempModel = entity.ToModel<FormFieldModel>();
+                    tempModel.ControlTypeString = await _localizationService.GetLocalizedEnumAsync(tempModel.ControlType);
 
                     var fieldOptions = await _formFieldOptionService.GetAllFormFieldOptionsAsync(formFieldId: tempModel.Id);
                     tempModel.Options = string.Join("<br />", fieldOptions.Select(x => x.Name));

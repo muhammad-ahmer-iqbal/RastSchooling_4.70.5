@@ -11,6 +11,7 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         {
             AvailableControlTypes = new List<SelectListItem>();
             FormFieldOptionModels = new List<FormFieldOptionModel>();
+            SelectedOptions = new List<string>();
         }
 
         public FormFieldModel(int formId) : this()
@@ -42,6 +43,7 @@ namespace Nop.Web.Areas.Admin.Models.Forms
 
         [NopResourceDisplayName("Admin.Forms.FormFieldModel.Field.Options")]
         public string Options { get; set; }
+        public IList<string> SelectedOptions { get; set; }
 
         public IList<FormFieldOptionModel> FormFieldOptionModels { get; set; }
     }

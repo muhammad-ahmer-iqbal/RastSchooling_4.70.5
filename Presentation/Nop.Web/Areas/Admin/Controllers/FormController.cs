@@ -270,6 +270,10 @@ namespace Nop.Web.Areas.Admin.Controllers
                 var entity = model.ToEntity<FormField>();
                 await _formFieldService.InsertUpdateFormFieldAsync(entity);
 
+                var options = (await _formFieldOptionService.GetAllFormFieldOptionsAsync(formFieldId: entity.Id)).to;
+                model.SelectedOptions=model.SelectedOptions.Where(x=>options)
+
+
                 return Ok(new ApiResponseModel(success: true, message: await _localizationService.GetResourceAsync("Admin.Common.Added")));
             }
             catch (Exception exc)

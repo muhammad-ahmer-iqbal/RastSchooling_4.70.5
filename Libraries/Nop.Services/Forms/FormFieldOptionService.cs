@@ -46,18 +46,25 @@ namespace Nop.Services.Forms
         {
             await _formfieldoptionRepository.InsertAsync(entity);
         }
+        public virtual async Task InsertFormFieldOptionAsync(IList<FormFieldOption> entities)
+        {
+            await _formfieldoptionRepository.InsertAsync(entities);
+        }
         public virtual async Task UpdateFormFieldOptionAsync(FormFieldOption entity)
         {
             await _formfieldoptionRepository.UpdateAsync(entity);
+        }
+        public virtual async Task UpdateFormFieldOptionAsync(IList<FormFieldOption> entities)
+        {
+            await _formfieldoptionRepository.UpdateAsync(entities);
         }
         public virtual async Task DeleteFormFieldOptionAsync(FormFieldOption entity)
         {
             await _formfieldoptionRepository.DeleteAsync(entity);
         }
-
-        public virtual async Task InsertUpdateFormFieldOptionAsync(FormFieldOption entity)
+        public virtual async Task DeleteFormFieldOptionAsync(IList<FormFieldOption> entities)
         {
-            await _formfieldoptionRepository.InsertUpdateAsync(entity);
+            await _formfieldoptionRepository.DeleteAsync(entities);
         }
 
         #endregion

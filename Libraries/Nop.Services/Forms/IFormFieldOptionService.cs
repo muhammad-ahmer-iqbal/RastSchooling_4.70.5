@@ -17,8 +17,10 @@ namespace Nop.Services.Forms
             );
         Task<FormFieldOption> GetFormFieldOptionByIdAsync(int id);
         Task InsertFormFieldOptionAsync(FormFieldOption entity);
+        Task InsertFormFieldOptionAsync(IList<FormFieldOption> entities);
         Task UpdateFormFieldOptionAsync(FormFieldOption entity);
+        Task UpdateFormFieldOptionAsync(IList<FormFieldOption> entities);
         Task DeleteFormFieldOptionAsync(FormFieldOption entity);
-        Task InsertUpdateFormFieldOptionAsync(FormFieldOption entity);
+        Task DeleteFormFieldOptionAsync(IList<FormFieldOption> entities);
     }
 }
