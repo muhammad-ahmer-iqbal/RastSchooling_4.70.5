@@ -1,6 +1,13 @@
 ﻿@using Nop.Core.Domain.Forms
 @model FormFieldModel
 
+<style>
+	.option-input {
+		cursor: move;
+	}
+</style>
+
+<input type="hidden" asp-for="Id" />
 <input type="hidden" asp-for="FormId" />
 
 <div class="form-group row">
@@ -48,14 +55,22 @@
 		<nop-label asp-for="Options" />
 	</div>
 	<div class="col-md-9">
-		<div id="optionList"></div>
+		<div id="optionList">
+			@foreach(var option in Model.FormFieldOptionModels)
+			{
+				<div class="d-flex pb-2 option-input">
+					<input type="text" name="SelectedOptions" class="form-control w-50 mr-2" value="@option.Name" />
+					<button type="button" class="btn btn-outline-danger remove-option">Remove</button>
+				</div>
+			}
+		</div>
 		<button type="button" class="btn btn-info" onclick="addOptionInput()">Add Option</button>
 	</div>
 </div>
 
 <script>
 	function toggleOptions() {
-		const controlType = parseInt($(this).val());
+		const controlType = parseInt($('#form-field-card #@Html.IdFor(model => model.ControlTypeId)').val());
 		const optionsDiv = $('#form-field-card #optionsContainer');
 		if ([@((int)ControlTypeEnum.DropDown), @((int)ControlTypeEnum.RadioButton), @((int)ControlTypeEnum.Checkbox)].includes(controlType)) {
 			//add option only if there is not at least one div
@@ -78,6 +93,25 @@
 		`;
 		$('#optionList').append(optionHtml);
 	}
+
+
+	$(document).ready(function () {
+		new Sortable(document.getElementById('optionList'), {
+			animation: 150,
+			handle: '.option-input', // Whole row is draggable
+		});
+
+		//edit mode
+		if(parseInt($('#form-field-card #@Html.IdFor(model => model.Id)').val()) > 0){
+			$('#btnAddUpdateFormField .add-new').hide()
+			$('#btnAddUpdateFormField .edit-item, #btnReset').show()
+		}
+		//add mode
+		else{
+			$('#btnAddUpdateFormField .add-new').show()
+			$('#btnAddUpdateFormField .edit-item, #btnReset').hide()
+		}
+	});
 
 	// Remove option input
 	$('#form-field-card').on('click', '.remove-option', function () {

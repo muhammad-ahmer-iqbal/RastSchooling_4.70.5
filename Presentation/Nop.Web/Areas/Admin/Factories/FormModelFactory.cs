@@ -140,10 +140,14 @@ namespace Nop.Web.Areas.Admin.Factories
             bool excludeProperties = default
             )
         {
-            if (entity != null)
+            if (entity is not null)
             {
                 //fill in model values from the entity
-                model ??= entity.ToModel<FormFieldModel>();
+                if (model is null)
+                {
+                    model = new FormFieldModel();
+                }
+                model = entity.ToModel<FormFieldModel>();
 
                 var fieldOptions = await _formFieldOptionService.GetAllFormFieldOptionsAsync(formFieldId: model.Id);
                 model.FormFieldOptionModels = fieldOptions

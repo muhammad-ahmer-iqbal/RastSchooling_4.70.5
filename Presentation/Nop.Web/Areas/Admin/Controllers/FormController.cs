@@ -240,16 +240,18 @@ namespace Nop.Web.Areas.Admin.Controllers
             return Json(model);
         }
 
-        public virtual async Task<IActionResult> FormFieldAddUpdate(int formId)
+        public virtual async Task<IActionResult> FormFieldAddUpdate(FormFieldModel model)
         {
             if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageForms))
                 return Unauthorized();
 
-            var entity = await _formService.GetFormByIdAsync(formId);
+            var entity = await _formService.GetFormByIdAsync(model.FormId);
             if (entity == null)
                 return BadRequest();
 
-            var model = await _formModelFactory.PrepareFormFieldModelAsync(new FormFieldModel(formId: formId), null);
+            var formField = await _formFieldService.GetFormFieldByIdAsync(model.Id);
+
+            model = await _formModelFactory.PrepareFormFieldModelAsync(model, formField);
             var view = await this.RenderPartialViewToStringAsync("_CreateOrUpdate.FormFieldAddUpdate", model);
 
             return Ok(new ApiResponseModel(success: true, model: new
@@ -270,9 +272,45 @@ namespace Nop.Web.Areas.Admin.Controllers
                 var entity = model.ToEntity<FormField>();
                 await _formFieldService.InsertUpdateFormFieldAsync(entity);
 
-                var options = (await _formFieldOptionService.GetAllFormFieldOptionsAsync(formFieldId: entity.Id)).to;
-                model.SelectedOptions=model.SelectedOptions.Where(x=>options)
+                var formFieldOptions = await _formFieldOptionService.GetAllFormFieldOptionsAsync(formFieldId: entity.Id);
+                var insertFormFieldOptions = new List<FormFieldOption>();
+                var updateFormFieldOptions = new List<FormFieldOption>();
+                foreach (var op in model.SelectedOptions.ToHashSet())
+                {
+                    if (string.IsNullOrEmpty(op))
+                    {
+                        continue;
+                    }
 
+                    var formFieldOption = formFieldOptions.FirstOrDefault(x => x.Name.Equals(op, StringComparison.InvariantCultureIgnoreCase));
+                    if (formFieldOption is not null)
+                    {
+                        formFieldOptions.Remove(formFieldOption);
+                    }
+                    else
+                    {
+                        formFieldOption = new FormFieldOption()
+                        {
+                            FormFieldId = entity.Id
+                        };
+                    }
+
+                    formFieldOption.Name = op;
+                    formFieldOption.DisplayOrder = model.SelectedOptions.IndexOf(op);
+
+                    if (formFieldOption.Id > 0)
+                    {
+                        updateFormFieldOptions.Add(formFieldOption);
+                    }
+                    else
+                    {
+                        insertFormFieldOptions.Add(formFieldOption);
+                    }
+                }
+
+                await _formFieldOptionService.InsertFormFieldOptionAsync(insertFormFieldOptions);
+                await _formFieldOptionService.UpdateFormFieldOptionAsync(updateFormFieldOptions);
+                await _formFieldOptionService.DeleteFormFieldOptionAsync(formFieldOptions);
 
                 return Ok(new ApiResponseModel(success: true, message: await _localizationService.GetResourceAsync("Admin.Common.Added")));
             }

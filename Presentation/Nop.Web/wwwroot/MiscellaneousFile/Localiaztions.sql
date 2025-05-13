@@ -440,5 +440,11 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'admin.common.reset',
+@ResourceValue = 'Reset/Cancel'
+GO
+
+
 
 

@@ -1,46 +1,59 @@
 ﻿@model FormModel
 
+@{
+	NopHtml.AddScriptParts(ResourceLocation.Footer, "https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js");
+}
+
 <div class="card-body">
 	@await Html.PartialAsync("Table", new DataTablesModel
-{
-	Name = "form-field-grid",
-	UrlRead = new DataUrl("FormFieldList", "Form", new RouteValueDictionary { [nameof(Model.FormFieldSearchModel.FormId)] = Model.Id }),
-	UrlDelete = new DataUrl("FormFieldDelete", "Student", null),
-	Length = Model.FormFieldSearchModel.PageSize,
-	LengthMenu = Model.FormFieldSearchModel.AvailablePageSizes,
-	ColumnCollection = new List<ColumnProperty>
 	{
-	new ColumnProperty(nameof(FormFieldModel.Name))
-	{
-	Title = T("Admin.Forms.FormFieldModel.Field.Name").Text,
-	},
-	new ColumnProperty(nameof(FormFieldModel.DisplayOrder))
-	{
-	Title = T("Admin.Forms.FormFieldModel.Field.DisplayOrder").Text,
-	},
-	new ColumnProperty(nameof(FormFieldModel.Required))
-	{
-	Title = T("Admin.Forms.FormFieldModel.Field.Required").Text,
-	Render = new RenderBoolean()
-	},
-	new ColumnProperty(nameof(FormFieldModel.ControlTypeString))
-	{
-	Title = T("Admin.Forms.FormFieldModel.Field.ControlTypeId").Text,
-	},
-	new ColumnProperty(nameof(FormFieldModel.Options))
-	{
-	Title = T("Admin.Forms.FormFieldModel.Field.Options").Text,
-	Encode = false
-	},
-	new ColumnProperty(nameof(FormFieldModel.Id))
-	{
-	Title = T("Admin.Common.Delete").Text,
-	Width = "100",
-	Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
-	ClassName = NopColumnClassDefaults.Button
-	}
-	}
-})
+		Name = "form-field-grid",
+		UrlRead = new DataUrl("FormFieldList", "Form", new RouteValueDictionary { [nameof(Model.FormFieldSearchModel.FormId)] = Model.Id }),
+		UrlDelete = new DataUrl("FormFieldDelete", "Student", null),
+		Length = Model.FormFieldSearchModel.PageSize,
+		LengthMenu = Model.FormFieldSearchModel.AvailablePageSizes,
+		ColumnCollection = new List<ColumnProperty>
+		{
+		new ColumnProperty(nameof(FormFieldModel.Name))
+		{
+		Title = T("Admin.Forms.FormFieldModel.Field.Name").Text,
+		},
+		new ColumnProperty(nameof(FormFieldModel.DisplayOrder))
+		{
+		Title = T("Admin.Forms.FormFieldModel.Field.DisplayOrder").Text,
+		},
+		new ColumnProperty(nameof(FormFieldModel.Required))
+		{
+		Title = T("Admin.Forms.FormFieldModel.Field.Required").Text,
+		Render = new RenderBoolean()
+		},
+		new ColumnProperty(nameof(FormFieldModel.ControlTypeString))
+		{
+		Title = T("Admin.Forms.FormFieldModel.Field.ControlTypeId").Text,
+		},
+		new ColumnProperty(nameof(FormFieldModel.Options))
+		{
+		Title = T("Admin.Forms.FormFieldModel.Field.Options").Text,
+		Encode = false,
+		ClassName = NopColumnClassDefaults.CenterAll
+		},
+		new ColumnProperty(nameof(FormFieldModel.Id))
+		{
+		Title = T("Admin.Common.Edit").Text,
+		Render = new RenderButtonCustom(NopButtonClassDefaults.Default, "<i class=\"fas fa-pencil-alt\"></i>" + T("Admin.Common.Edit").Text)
+		{
+			OnClickFunctionName =  "AddUpdateFormField"
+		}   
+		},
+		new ColumnProperty(nameof(FormFieldModel.Id))
+		{
+		Title = T("Admin.Common.Delete").Text,
+		Width = "100",
+		Render = new RenderButtonRemove(T("Admin.Common.Delete").Text),
+		ClassName = NopColumnClassDefaults.Button
+		}
+		}
+	})
 
 	<div class="card card-default">
 		<div class="card-header">
@@ -51,14 +64,23 @@
 		<div class="card-footer">
 			<div class="row">
 				<button type="button" id="btnAddUpdateFormField" class="btn btn-primary offset-md-3">
-					@T("admin.common.addnew")
+					<span class="add-new" style="display: none;">
+						@T("admin.common.addnew")
+					</span>
+					<span class="edit-item" style="display: none;">
+						@T("admin.common.edit")
+					</span>
+				</button>
+				<button type="button" id="btnReset" class="btn btn-primary ml-3" style="display: none;">
+						@T("admin.common.reset")
 				</button>
 			</div>
 		</div>
 		<script>
-			function AddUpdateFormField(){
+			function AddUpdateFormField(id = null){
 				var postData = {
-					formId: @Model.Id,
+					Id: id ?? 0,
+					FormId: @Model.Id
 				};
 
 				$.ajax({
@@ -95,15 +117,7 @@
 					return;
 				}
 
-
-
 				var postData = $('#form-field-card').find('input[name], select[name], textarea[name]').serializeArray();
-
-				// var postData = {
-				// 	StartDate: startDate.val(),
-				// 	EndDate: endDate.val(),
-				// 	CustomerId: @Model.Id
-				// };
 
 				addAntiForgeryToken(postData);
 
@@ -133,6 +147,10 @@
 					}
 				});
 			})
+
+			$(document).on('click', '#btnReset', function () {
+				AddUpdateFormField();
+			});
 		</script>
 	</div>
 </div>
