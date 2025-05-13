@@ -7,15 +7,6 @@
     NopHtml.SetActiveMenuItemSystemName("Forms");
 }
 
-@if (Model.Lock)
-{
-    <script>
-        $(document).ready(function(){
-            $('input, textarea, select, button').prop('disabled', true);
-        })
-    </script>
-}
-
 <form method="post" id="form-edit-form">
     <div class="content-header clearfix">
         <h1 class="float-left">

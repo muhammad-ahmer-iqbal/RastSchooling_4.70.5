@@ -1784,8 +1784,7 @@ public partial class AdminMapperConfiguration : Profile, IOrderedMapperProfile
 
     protected virtual void CreateFormsMaps()
     {
-        CreateMap<Form, FormModel>()
-            .ForMember(fm => fm.Lock, f => f.Ignore());
+        CreateMap<Form, FormModel>();
         CreateMap<FormModel, Form>();
 
         CreateMap<FormField, FormFieldModel>();

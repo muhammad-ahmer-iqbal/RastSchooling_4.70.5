@@ -15,8 +15,8 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         [NopResourceDisplayName("Admin.Forms.FormModel.Field.Name")]
         public string Name { get; set; }
 
-        [NopResourceDisplayName("Admin.Forms.FormModel.Field.Lock")]
-        public bool Lock { get; set; }
+        //[NopResourceDisplayName("Admin.Forms.FormModel.Field.Lock")]
+        //public bool Lock { get; set; }
 
         [NopResourceDisplayName("Admin.Forms.FormModel.Field.Active")]
         public bool Active { get; set; }

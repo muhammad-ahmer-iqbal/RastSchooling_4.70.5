@@ -10,7 +10,6 @@ namespace Nop.Core.Domain.Forms
     public partial class Form : BaseEntity
     {
         public string Name { get; set; }
-        public bool Lock { get; set; }
         public bool Active { get; set; }
     }
 }
