@@ -99,6 +99,7 @@ public partial class NopCommonStartup : INopStartup
                         if (filePath.EndsWith(".sql", StringComparison.InvariantCultureIgnoreCase))
                         {
                             var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
+                            fileContent = fileContent.Trim();
                             var fileContentList = Regex.Split(fileContent, @"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                             foreach (var content in fileContentList)
                             {
