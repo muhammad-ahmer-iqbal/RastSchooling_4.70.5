@@ -103,17 +103,17 @@ public partial class NopCommonStartup : INopStartup
                             var fileContentList = Regex.Split(fileContent, @"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
                             foreach (var content in fileContentList)
                             {
-                                var trimedContent = content?.Trim();
-                                if (!string.IsNullOrEmpty(trimedContent))
+                                var trimmedContent = content?.Trim();
+                                if (!string.IsNullOrEmpty(trimmedContent))
                                 {
 
                                     try
                                     {
-                                        await _dataProvider.ExecuteNonQueryAsync(trimedContent);
+                                        await _dataProvider.ExecuteNonQueryAsync(trimmedContent);
                                     }
                                     catch (Exception ex)
                                     {
-                                        await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {trimedContent},\n{ex.Message}", ex);
+                                        await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {trimmedContent},\n{ex.Message}", ex);
                                     }
                                 }
                             }
