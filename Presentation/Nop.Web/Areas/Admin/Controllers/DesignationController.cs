@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-using Nop.Core.Domain.ApiResponseModel;
+using Nop.Core.Domain.Utilities;
 using Nop.Core.Domain.Staffs;
 using Nop.Services.Localization;
 using Nop.Services.Security;

@@ -2,7 +2,7 @@
 using Microsoft.Extensions.Azure;
 
 using Nop.Core;
-using Nop.Core.Domain.ApiResponseModel;
+using Nop.Core.Domain.Utilities;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Students;

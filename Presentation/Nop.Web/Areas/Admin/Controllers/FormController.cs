@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Nop.Core.Domain.ApiResponseModel;
+using Nop.Core.Domain.Utilities;
 using Nop.Core.Domain.Forms;
 using Nop.Services.Forms;
 using Nop.Services.Localization;

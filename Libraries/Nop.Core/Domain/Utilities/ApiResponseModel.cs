@@ -1,10 +1,12 @@
-﻿using System;
+﻿using Newtonsoft.Json;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Nop.Core.Domain.ApiResponseModel
+namespace Nop.Core.Domain.Utilities
 {
     public class ApiResponseModel
     {
@@ -19,7 +21,7 @@ namespace Nop.Core.Domain.ApiResponseModel
             this.message = message;
             if (!success)
             {
-                this.error = this.message;
+                error = this.message;
             }
         }
 
@@ -33,9 +35,17 @@ namespace Nop.Core.Domain.ApiResponseModel
             this.model = model;
         }
 
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public bool success { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string message { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string error { get; set; }
+
+        [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public object model { get; set; }
 
     }
