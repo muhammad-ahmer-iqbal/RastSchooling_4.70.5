@@ -87,6 +87,7 @@ public partial class NopCommonStartup : INopStartup
             {
                 if (files?.Any() ?? false)
                 {
+                    //so functions/procedure could be created first (_sp.ProcedureName)
                     files = files.OrderBy(x => _fileProvider.GetFileNameWithoutExtension(x)).ToArray();
                     var _dataProvider = EngineContext.Current.Resolve<INopDataProvider>();
                     if (!await _dataProvider.DatabaseExistsAsync())
@@ -100,21 +101,23 @@ public partial class NopCommonStartup : INopStartup
                         {
                             var fileContent = await _fileProvider.ReadAllTextAsync(filePath, Encoding.Default);
                             fileContent = fileContent.Trim();
+
                             var fileContentList = Regex.Split(fileContent, @"^\s*GO\s*$", RegexOptions.IgnoreCase | RegexOptions.Multiline);
+                            fileContentList = fileContentList.Select(x => x?.Trim()).ToArray();
+
                             foreach (var content in fileContentList)
                             {
-                                var trimmedContent = content?.Trim();
-                                if (!string.IsNullOrEmpty(trimmedContent))
+                                if (string.IsNullOrEmpty((string)content))
                                 {
-
-                                    try
-                                    {
-                                        await _dataProvider.ExecuteNonQueryAsync(trimmedContent);
-                                    }
-                                    catch (Exception ex)
-                                    {
-                                        await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {trimmedContent},\n{ex.Message}", ex);
-                                    }
+                                    continue;
+                                }
+                                try
+                                {
+                                    await _dataProvider.ExecuteNonQueryAsync(content);
+                                }
+                                catch (Exception ex)
+                                {
+                                    await _logger.WarningAsync($"Error on running script. Path: {filePath}, Content: {content},\n{ex.Message}", ex);
                                 }
                             }
                         }
