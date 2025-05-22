@@ -95,6 +95,8 @@ namespace Nop.Web.Areas.Admin.Controllers
 
         private async Task<Customer> InsertUpdateCustomerAsync(TeacherModel model, Customer entity)
         {
+            #region Save Entity Data
+
             entity ??= new Customer()
             {
                 CreatedOnUtc = DateTime.UtcNow,
@@ -109,6 +111,10 @@ namespace Nop.Web.Areas.Admin.Controllers
                 };
             teacherExtension = model.ToEntity(teacherExtension);
             await _teacherExtensionService.InsertUpdateTeacherExtensionAsync(teacherExtension);
+
+            #endregion
+
+            #region Add Roles
 
             var teacherRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.TeachersRoleName);
             var registerRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.RegisteredRoleName);
@@ -132,6 +138,8 @@ namespace Nop.Web.Areas.Admin.Controllers
                     CustomerRoleId = registerRole.Id,
                 });
             }
+
+            #endregion
 
             return entity;
         }

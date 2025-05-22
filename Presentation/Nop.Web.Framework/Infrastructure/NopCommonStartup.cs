@@ -107,7 +107,7 @@ public partial class NopCommonStartup : INopStartup
 
                             foreach (var content in fileContentList)
                             {
-                                if (string.IsNullOrEmpty((string)content))
+                                if (string.IsNullOrEmpty(content))
                                 {
                                     continue;
                                 }

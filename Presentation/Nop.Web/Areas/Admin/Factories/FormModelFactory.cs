@@ -5,6 +5,9 @@ using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Core.Domain.Forms;
 using Nop.Services;
 using Nop.Services.Localization;
+using Nop.Core;
+using Nop.Services.Seo;
+using DocumentFormat.OpenXml.Office2021.Excel.RichDataWebImage;
 
 namespace Nop.Web.Areas.Admin.Factories
 {
@@ -16,6 +19,8 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly IFormFieldService _formFieldService;
         protected readonly IFormFieldOptionService _formFieldOptionService;
         protected readonly ILocalizationService _localizationService;
+        protected readonly IWebHelper _webHelper;
+        protected readonly IUrlRecordService _urlRecordService;
 
         #endregion
 
@@ -25,13 +30,17 @@ namespace Nop.Web.Areas.Admin.Factories
             IFormService formService,
             IFormFieldService formFieldService,
             IFormFieldOptionService formFieldOptionService,
-            ILocalizationService localizationService
+            ILocalizationService localizationService,
+            IWebHelper webHelper,
+            IUrlRecordService urlRecordService
             )
         {
             _formService = formService;
             _formFieldService = formFieldService;
             _formFieldOptionService = formFieldOptionService;
             _localizationService = localizationService;
+            _webHelper = webHelper;
+            _urlRecordService = urlRecordService;
         }
 
         #endregion
@@ -40,13 +49,13 @@ namespace Nop.Web.Areas.Admin.Factories
 
         #region Form
 
-        public virtual async Task<FormSearchModel> PrepareFormSearchModelAsync(FormSearchModel searchModel)
+        public virtual Task<FormSearchModel> PrepareFormSearchModelAsync(FormSearchModel searchModel)
         {
             ArgumentNullException.ThrowIfNull(nameof(searchModel));
 
             searchModel.SetGridPageSize();
 
-            return searchModel;
+            return Task.FromResult(searchModel);
         }
 
         public virtual async Task<FormListModel> PrepareFormListModelAsync(FormSearchModel searchModel)
@@ -62,7 +71,10 @@ namespace Nop.Web.Areas.Admin.Factories
             {
                 return allEntities.SelectAwait(async entity =>
                 {
-                    var tempModel = entity.ToModel<FormModel>();
+                    var tempModel = await this.PrepareFormModelAsync(
+                        model: default,
+                        entity: entity
+                        );
 
                     return tempModel;
                 });
@@ -73,21 +85,16 @@ namespace Nop.Web.Areas.Admin.Factories
 
         public virtual async Task<FormModel> PrepareFormModelAsync(
             FormModel model,
-            Form entity,
-            bool excludeProperties = default
+            Form entity
             )
         {
             if (entity != null)
             {
                 //fill in model values from the entity
                 model ??= entity.ToModel<FormModel>();
-            }
-            else
-            {
-                if (!excludeProperties)
-                {
 
-                }
+                model.SeName = await _urlRecordService.GetSeNameAsync(entity);
+                model.SeName = _webHelper.GetAbsoluteUrl(model.SeName);
             }
 
             model.FormFieldSearchModel = await this.PrepareFormFieldSearchModelAsync(model.FormFieldSearchModel);
@@ -99,13 +106,13 @@ namespace Nop.Web.Areas.Admin.Factories
 
         #region Form Field
 
-        public virtual async Task<FormFieldSearchModel> PrepareFormFieldSearchModelAsync(FormFieldSearchModel searchModel)
+        public virtual Task<FormFieldSearchModel> PrepareFormFieldSearchModelAsync(FormFieldSearchModel searchModel)
         {
             ArgumentNullException.ThrowIfNull(nameof(searchModel));
 
             searchModel.SetGridPageSize();
 
-            return searchModel;
+            return Task.FromResult(searchModel);
         }
 
         public virtual async Task<FormFieldListModel> PrepareFormFieldListModelAsync(FormFieldSearchModel searchModel)
@@ -136,8 +143,7 @@ namespace Nop.Web.Areas.Admin.Factories
 
         public virtual async Task<FormFieldModel> PrepareFormFieldModelAsync(
             FormFieldModel model,
-            FormField entity,
-            bool excludeProperties = default
+            FormField entity
             )
         {
             if (entity is not null)
@@ -153,12 +159,6 @@ namespace Nop.Web.Areas.Admin.Factories
                 model.FormFieldOptionModels = fieldOptions
                     .Select(x => x.ToModel<FormFieldOptionModel>())
                     .ToList();
-            }
-            else
-            {
-                if (!excludeProperties)
-                {
-                }
             }
 
             model.AvailableControlTypes = (await ControlTypeEnum.TextBox.ToSelectListAsync()).ToList();

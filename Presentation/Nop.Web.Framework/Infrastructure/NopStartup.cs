@@ -246,6 +246,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<IFormService, FormService>();
         services.AddScoped<IFormFieldService, FormFieldService>();
         services.AddScoped<IFormFieldOptionService, FormFieldOptionService>();
+        services.AddScoped<IStudentSessionMappingService, StudentSessionMappingService>();
 
         //attribute services
         services.AddScoped(typeof(IAttributeService<,>), typeof(AttributeService<,>));

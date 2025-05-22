@@ -1,0 +1,14 @@
+IF COL_LENGTH('StudentExtension', 'HouseId') IS NULL
+BEGIN
+ALTER TABLE StudentExtension ADD HouseId INT NULL
+END
+GO
+
+IF OBJECT_ID('StudentSessionMapping') IS NULL
+BEGIN
+CREATE TABLE StudentSessionMapping(
+Id INT NOT NULL IDENTITY PRIMARY KEY,
+CustomerId INT NOT NULL FOREIGN KEY REFERENCES Customer(Id),
+DepartmentId INT NOT NULL FOREIGN KEY REFERENCES Department(Id))
+END
+GO

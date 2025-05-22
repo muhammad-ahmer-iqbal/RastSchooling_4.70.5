@@ -84,6 +84,7 @@ public partial interface IUrlRecordService
     /// <param name="languageId">Language ID</param>
     /// <returns>A task that represents the asynchronous operation</returns>
     Task SaveSlugAsync<T>(T entity, string slug, int languageId) where T : BaseEntity, ISlugSupported;
+    Task SaveSlugAsync<T>(T entity, string slug) where T : BaseEntity, ISlugSupported;
 
     /// <summary>
     ///  Get search engine friendly name (slug)

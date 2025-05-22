@@ -31,7 +31,7 @@ namespace Nop.Services.Students
         {
             return await _studentExtensionRepository.GetAllPagedAsync(query =>
             {
-                query = query.Where(x => x.CustomerId == customerId);
+                query = query.Where(x => x.CustomerId.Equals(customerId));
 
                 return query;
             }, pageIndex, pageSize);

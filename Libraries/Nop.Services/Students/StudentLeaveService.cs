@@ -9,7 +9,7 @@ using Nop.Data;
 
 namespace Nop.Services.Students
 {
-    public partial class StudentLeaveService: IStudentLeaveService
+    public partial class StudentLeaveService : IStudentLeaveService
     {
         #region Fields
 
@@ -36,7 +36,7 @@ namespace Nop.Services.Students
         {
             return await _studentLeaveRepository.GetAllPagedAsync(query =>
             {
-                query = query.Where(x => x.CustomerId == customerId);
+                query = query.Where(x => x.CustomerId.Equals(customerId));
 
                 return query;
             }, pageIndex, pageSize);

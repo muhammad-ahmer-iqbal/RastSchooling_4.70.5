@@ -1364,6 +1364,11 @@ public partial class UrlRecordService : IUrlRecordService
         }
     }
 
+    public virtual async Task SaveSlugAsync<T>(T entity, string slug) where T : BaseEntity, ISlugSupported
+    {
+        await this.SaveSlugAsync(entity, slug, (await _workContext.GetWorkingLanguageAsync()).Id);
+    }
+
     /// <summary>
     ///  Get search engine friendly name (slug)
     /// </summary>

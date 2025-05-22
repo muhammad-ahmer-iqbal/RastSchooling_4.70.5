@@ -18,6 +18,9 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         [NopResourceDisplayName("Admin.Forms.FormModel.Field.Active")]
         public bool Active { get; set; }
 
+        [NopResourceDisplayName("Admin.Forms.FormModel.Field.SeName")]
+        public string SeName { get; set; }
+
         public FormFieldSearchModel FormFieldSearchModel { get; set; }
     }
 }

@@ -446,5 +446,23 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.SeName',
+@ResourceValue = 'Form URL'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentModel.Fields.SelectedSessionIds',
+@ResourceValue = 'Select Sessions'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Students.StudentModel.Fields.HouseId',
+@ResourceValue = 'Select House'
+GO
+
+
 
 

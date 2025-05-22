@@ -1,9 +1,14 @@
-﻿using Microsoft.Identity.Client;
+﻿using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Identity.Client;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Directory;
+using Nop.Core.Domain.Staffs;
+using Nop.Core.Domain.Students;
+using Nop.Services;
 using Nop.Services.Customers;
 using Nop.Services.Directory;
 using Nop.Services.Localization;
+using Nop.Services.Staffs;
 using Nop.Services.Students;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 using Nop.Web.Areas.Admin.Models.Students;
@@ -22,6 +27,8 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly ICurrencyService _currencyService;
         protected readonly CurrencySettings _currencySettings;
         protected readonly IStudentLeaveService _studentLeaveService;
+        protected readonly IDepartmentService _departmentService;
+        protected readonly IStudentSessionMappingService _studentSessionMappingService;
 
         #endregion
 
@@ -34,7 +41,9 @@ namespace Nop.Web.Areas.Admin.Factories
             IBaseAdminModelFactory baseAdminModelFactory,
             ICurrencyService currencyService,
             CurrencySettings currencySettings,
-            IStudentLeaveService studentLeaveService
+            IStudentLeaveService studentLeaveService,
+            IDepartmentService departmentService,
+            IStudentSessionMappingService studentSessionMappingService
             )
         {
             _customerService = customerService;
@@ -44,6 +53,8 @@ namespace Nop.Web.Areas.Admin.Factories
             _currencyService = currencyService;
             _currencySettings = currencySettings;
             _studentLeaveService = studentLeaveService;
+            _departmentService = departmentService;
+            _studentSessionMappingService = studentSessionMappingService;
         }
 
         #endregion
@@ -78,10 +89,10 @@ namespace Nop.Web.Areas.Admin.Factories
             {
                 return allEntities.SelectAwait(async entity =>
                 {
-                    var tempModel = entity.ToModel<StudentModel>();
-
-                    var studentExtension = await _studentExtensionService.GetStudentExtensionByCustomerIdAsync(entity.Id);
-                    tempModel = studentExtension.ToModel(tempModel);
+                    var tempModel = await this.PrepareStudentModelAsync(
+                        model: default,
+                        entity: entity
+                        );
 
                     return tempModel;
                 });
@@ -102,17 +113,27 @@ namespace Nop.Web.Areas.Admin.Factories
 
                 var studentExtension = await _studentExtensionService.GetStudentExtensionByCustomerIdAsync(entity.Id);
                 model = studentExtension.ToModel(model);
+
+                if (!excludeProperties)
+                {
+                    model.SelectedSessionIds = (await _studentSessionMappingService.GetAllStudentSessionMappingsAsync(customerId: entity.Id))
+                        .Select(x => x.Id)
+                        .ToList();
+                }
             }
             else
             {
-                if (!excludeProperties)
-                {
-                    model.Active = true;
-                    model.DateOfAdmission = DateTime.Today;
-                }
+                model.Active = true;
+                model.DateOfAdmission = DateTime.Today;
             }
 
             model.StudentLeaveSearchModel = await this.PrepareStudentLeaveSearchModelAsync(model.StudentLeaveSearchModel);
+            model.AvailableHouses = (await HouseEnum.Red.ToSelectListAsync(markCurrentAsSelected: false)).ToList();
+            model.AvailableHouses.Insert(0, new SelectListItem(text: await _localizationService.GetResourceAsync("admin.common.select"), value: string.Empty));
+            var departments = await _departmentService.GetAllDepartmentsAsync();
+            model.AvailableSessions = departments
+                .ToSelectList(x => (x as Department).Name)
+                .ToList();
 
             return model;
         }

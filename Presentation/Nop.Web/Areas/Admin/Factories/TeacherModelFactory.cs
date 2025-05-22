@@ -95,8 +95,7 @@ namespace Nop.Web.Areas.Admin.Factories
         }
         public virtual async Task<TeacherModel> PrepareTeacherModelAsync(
             TeacherModel model,
-            Customer entity,
-            bool excludeProperties = default
+            Customer entity
             )
         {
             if (entity != null)
@@ -109,11 +108,8 @@ namespace Nop.Web.Areas.Admin.Factories
             }
             else
             {
-                if (!excludeProperties)
-                {
-                    model.Active = true;
-                    model.DateOfJoining = DateTime.Today;
-                }
+                model.Active = true;
+                model.DateOfJoining = DateTime.Today;
             }
 
             var allDepartments = await _departmentService.GetAllDepartmentsAsync();

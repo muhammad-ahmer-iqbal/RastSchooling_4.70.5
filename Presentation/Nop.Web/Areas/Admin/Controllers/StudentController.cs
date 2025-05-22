@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Azure;
 
 using Nop.Core;
 using Nop.Core.Domain.Utilities;
-using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Students;
 using Nop.Services.Customers;
@@ -13,7 +11,6 @@ using Nop.Services.Security;
 using Nop.Services.Students;
 using Nop.Web.Areas.Admin.Factories;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
-using Nop.Web.Areas.Admin.Models.Catalog;
 using Nop.Web.Areas.Admin.Models.Customers;
 using Nop.Web.Areas.Admin.Models.Students;
 using Nop.Web.Framework.Controllers;
@@ -38,6 +35,7 @@ namespace Nop.Web.Areas.Admin.Controllers
         protected readonly CustomerSettings _customerSettings;
         protected readonly ICustomerRegistrationService _customerRegistrationService;
         protected readonly IStudentLeaveService _studentLeaveService;
+        protected readonly IStudentSessionMappingService _studentSessionMappingService;
 
         #endregion
 
@@ -53,7 +51,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             ILogger logger,
             CustomerSettings customerSettings,
             ICustomerRegistrationService customerRegistrationService,
-            IStudentLeaveService studentLeaveService
+            IStudentLeaveService studentLeaveService,
+            IStudentSessionMappingService studentSessionMappingService
             )
         {
             _permissionService = permissionService;
@@ -66,6 +65,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             _customerSettings = customerSettings;
             _customerRegistrationService = customerRegistrationService;
             _studentLeaveService = studentLeaveService;
+            _studentSessionMappingService = studentSessionMappingService;
         }
 
         #endregion
@@ -116,6 +116,8 @@ namespace Nop.Web.Areas.Admin.Controllers
 
         private async Task<Customer> InsertUpdateCustomerAsync(StudentModel model, Customer entity)
         {
+            #region Save Entity Data
+
             entity ??= new Customer()
             {
                 CreatedOnUtc = DateTime.UtcNow,
@@ -130,6 +132,10 @@ namespace Nop.Web.Areas.Admin.Controllers
                 };
             studentExtension = model.ToEntity(studentExtension);
             await _studentExtensionService.InsertUpdateStudentExtensionAsync(studentExtension);
+
+            #endregion
+
+            #region Add Roles
 
             var studentRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.StudentsRoleName);
             var registerRole = await _customerService.GetCustomerRoleBySystemNameAsync(NopCustomerDefaults.RegisteredRoleName);
@@ -153,6 +159,38 @@ namespace Nop.Web.Areas.Admin.Controllers
                     CustomerRoleId = registerRole.Id,
                 });
             }
+
+            #endregion
+
+            #region Add Sessions
+
+            var existingSessions = await _studentSessionMappingService.GetAllStudentSessionMappingsAsync(customerId: entity.Id);
+            var insertSessions = new List<StudentSessionMapping>();
+            if (model.SelectedSessionIds is not null)
+            {
+                foreach (var sessionId in model.SelectedSessionIds)
+                {
+                    if (existingSessions.FirstOrDefault(x => x.DepartmentId.Equals(sessionId)) is var existingSession
+                        && existingSession is not null)
+                    {
+                        existingSessions.Remove(existingSession); //remove from existing session list
+                        //already assigned
+                        continue;
+                    }
+
+                    insertSessions.Add(new StudentSessionMapping()
+                    {
+                        CustomerId = entity.Id,
+                        DepartmentId = sessionId
+                    });
+                }
+            }
+
+            await _studentSessionMappingService.InsertStudentSessionMappingAsync(insertSessions);
+            await _studentSessionMappingService.DeleteStudentSessionMappingAsync(existingSessions);
+
+            #endregion
+
 
             return entity;
         }

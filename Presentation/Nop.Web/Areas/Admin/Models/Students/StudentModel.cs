@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Web.Areas.Admin.Models.Customers;
 using Nop.Web.Framework.Models;
 using Nop.Web.Framework.Mvc.ModelBinding;
@@ -11,6 +12,9 @@ namespace Nop.Web.Areas.Admin.Models.Students
         {
             StudentLeaveSearchModel = new StudentLeaveSearchModel();
             StudentLeaveModel = new StudentLeaveModel();
+            AvailableSessions = new List<SelectListItem>();
+            SelectedSessionIds = new List<int>();
+            AvailableHouses = new List<SelectListItem>();
         }
 
         [NopResourceDisplayName("Admin.Students.StudentModel.Fields.MonthlyFee")]
@@ -41,6 +45,13 @@ namespace Nop.Web.Areas.Admin.Models.Students
         [NopResourceDisplayName("Admin.Students.StudentModel.Fields.DateOfAdmission")]
         public DateTime? DateOfAdmission { get; set; }
 
+        [NopResourceDisplayName("Admin.Students.StudentModel.Fields.SelectedSessionIds")]
+        public IList<int> SelectedSessionIds { get; set; }
+        public IList<SelectListItem> AvailableSessions { get; set; }
+
+        [NopResourceDisplayName("Admin.Students.StudentModel.Fields.HouseId")]
+        public int? HouseId { get; set; }
+        public IList<SelectListItem> AvailableHouses { get; set; }
 
         public StudentLeaveSearchModel StudentLeaveSearchModel { get; set; }
         public StudentLeaveModel StudentLeaveModel { get; set; }

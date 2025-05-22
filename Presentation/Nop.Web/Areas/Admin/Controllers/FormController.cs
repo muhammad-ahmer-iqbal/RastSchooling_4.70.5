@@ -13,8 +13,8 @@ using Nop.Web.Framework.Mvc;
 using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 
 using ILogger = Nop.Services.Logging.ILogger;
-using Nop.Core.Domain.Students;
-using Nop.Web.Areas.Admin.Models.Students;
+using Nop.Services.Seo;
+using Nop.Core;
 
 namespace Nop.Web.Areas.Admin.Controllers
 {
@@ -30,6 +30,7 @@ namespace Nop.Web.Areas.Admin.Controllers
         protected readonly IFormFieldService _formFieldService;
         protected readonly IFormFieldOptionService _formFieldOptionService;
         protected readonly ILogger _logger;
+        protected readonly IUrlRecordService _urlRecordService;
 
         #endregion
 
@@ -43,7 +44,8 @@ namespace Nop.Web.Areas.Admin.Controllers
             IFormService formService,
             IFormFieldService formFieldService,
             IFormFieldOptionService formFieldOptionService,
-            ILogger logger
+            ILogger logger,
+            IUrlRecordService urlRecordService
             )
         {
             _permissionService = permissionService;
@@ -54,6 +56,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             _formFieldService = formFieldService;
             _formFieldOptionService = formFieldOptionService;
             _logger = logger;
+            _urlRecordService = urlRecordService;
         }
 
         #endregion
@@ -75,6 +78,16 @@ namespace Nop.Web.Areas.Admin.Controllers
             entity ??= new Form();
             entity = model.ToEntity(entity);
             await _formService.InsertUpdateFormAsync(entity);
+
+            var seName = await _urlRecordService.ValidateSeNameAsync(
+                entity: entity,
+                seName: model.Name,
+                name: entity.Name,
+                ensureNotEmpty: true);
+
+            await _urlRecordService.SaveSlugAsync(
+                entity: entity,
+                slug: seName);
 
             return entity;
         }
@@ -143,7 +156,7 @@ namespace Nop.Web.Areas.Admin.Controllers
                 }
             }
 
-            model = await _formModelFactory.PrepareFormModelAsync(model, null, true);
+            model = await _formModelFactory.PrepareFormModelAsync(model, null);
             return View(model);
         }
 
@@ -192,7 +205,7 @@ namespace Nop.Web.Areas.Admin.Controllers
             }
 
             //if we got this far, something failed, redisplay form
-            model = await _formModelFactory.PrepareFormModelAsync(model, entity, true);
+            model = await _formModelFactory.PrepareFormModelAsync(model, entity);
 
             return View(model);
         }

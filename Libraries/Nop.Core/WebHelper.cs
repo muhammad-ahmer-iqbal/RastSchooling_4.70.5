@@ -433,5 +433,12 @@ public partial class WebHelper : IWebHelper
         return request.Headers.XRequestedWith == "XMLHttpRequest";
     }
 
+    public virtual string GetAbsoluteUrl(string relativeUrl)
+    {
+        //try to get a store by the passed identifier
+        var storeUrl = this.GetStoreLocation();
+        return new Uri(new Uri(storeUrl), relativeUrl).AbsoluteUri;
+    }
+
     #endregion
 }

@@ -92,4 +92,24 @@
 		</div>
 	</div>
 
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="HouseId" />
+		</div>
+		<div class="col-md-9">
+			<nop-select asp-for="HouseId" asp-items="Model.AvailableHouses" />
+			<span asp-validation-for="HouseId"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="SelectedSessionIds" />
+		</div>
+		<div class="col-md-9">
+			<nop-select asp-for="SelectedSessionIds" asp-items="Model.AvailableSessions" asp-multiple="true" />
+			<span asp-validation-for="SelectedSessionIds"></span>
+		</div>
+	</div>
+
 </div>

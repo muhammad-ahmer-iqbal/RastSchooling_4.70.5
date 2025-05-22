@@ -9,8 +9,7 @@ namespace Nop.Web.Areas.Admin.Factories
         Task<TeacherListModel> PrepareTeacherListModelAsync(TeacherSearchModel searchModel);
         Task<TeacherModel> PrepareTeacherModelAsync(
             TeacherModel model,
-            Customer entity,
-            bool excludeProperties = default
+            Customer entity
             );
     }
 }
