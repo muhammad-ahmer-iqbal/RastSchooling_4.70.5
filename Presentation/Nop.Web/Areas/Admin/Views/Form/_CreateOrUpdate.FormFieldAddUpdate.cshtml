@@ -104,12 +104,12 @@
 		//edit mode
 		if(parseInt($('#form-field-card #@Html.IdFor(model => model.Id)').val()) > 0){
 			$('#btnAddUpdateFormField .add-new').hide()
-			$('#btnAddUpdateFormField .edit-item, #btnReset').show()
+			$('#btnAddUpdateFormField .edit-item').show()
 		}
 		//add mode
 		else{
 			$('#btnAddUpdateFormField .add-new').show()
-			$('#btnAddUpdateFormField .edit-item, #btnReset').hide()
+			$('#btnAddUpdateFormField .edit-item').hide()
 		}
 	});
 
