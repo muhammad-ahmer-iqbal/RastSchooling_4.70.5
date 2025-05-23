@@ -71,6 +71,11 @@ namespace Nop.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError(nameof(model.Name), await _localizationService.GetResourceAsync("Admin.Forms.FormModel.Field.Name.Required"));
             }
+
+            if (model.DepartmentId.Equals(default))
+            {
+                ModelState.AddModelError(nameof(model.DepartmentId), await _localizationService.GetResourceAsync("Admin.Forms.FormModel.Field.DepartmentId.Required"));
+            }
         }
 
         private async Task<Form> InsertUpdateFormAsync(FormModel model, Form entity)

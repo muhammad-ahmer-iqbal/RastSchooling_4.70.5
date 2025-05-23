@@ -44,13 +44,17 @@ namespace Nop.Web.Areas.Admin.Models.Staffs
 
 
         [NopResourceDisplayName("Admin.Staffs.TeacherModel.Fields.DesignationId")]
-        public int? DesignationId { get; set; }
+        public int DesignationId { get; set; }
         public IList<SelectListItem> AvailableDesignations { get; set; }
 
 
         [NopResourceDisplayName("Admin.Staffs.TeacherModel.Fields.DepartmentId")]
-        public int? DepartmentId { get; set; }
+        public int DepartmentId { get; set; }
         public IList<SelectListItem> AvailableDepartments { get; set; }
+
+
+        [NopResourceDisplayName("Admin.Common.DefaultPasword")]
+        public string CustomerGuid { get; set; }
     }
 
 }

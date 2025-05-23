@@ -112,16 +112,17 @@ namespace Nop.Web.Areas.Admin.Factories
                 model.DateOfJoining = DateTime.Today;
             }
 
-            var allDepartments = await _departmentService.GetAllDepartmentsAsync();
-            var allDesignations = await _designationService.GetAllDesignationsAsync();
+            await _baseAdminModelFactory.PrepareDepartmentsAsync(
+                items: model.AvailableDepartments,
+                defaultItemText: await _localizationService.GetResourceAsync("admin.common.select"),
+                defaultItemValue: string.Empty);
+
+            await _baseAdminModelFactory.PrepareDesignationsAsync(
+                items: model.AvailableDesignations,
+                defaultItemText: await _localizationService.GetResourceAsync("admin.common.select"));
 
             model.AvailableShifts = (await ShiftEnum.Morning.ToSelectListAsync()).ToList();
-            model.AvailableDepartments = allDepartments.ToSelectList(x => (x as Department).Name).ToList();
-            model.AvailableDesignations = allDesignations.ToSelectList(x => (x as Designation).Name).ToList();
 
-            var defaultItem = new SelectListItem(text: await _localizationService.GetResourceAsync("admin.common.select"), value: string.Empty);
-            model.AvailableDepartments.Insert(0, defaultItem);
-            model.AvailableDesignations.Insert(0, defaultItem);
 
             return model;
         }

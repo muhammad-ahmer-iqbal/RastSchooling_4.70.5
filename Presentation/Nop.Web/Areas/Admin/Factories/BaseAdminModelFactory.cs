@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.Rendering;
+﻿using DocumentFormat.OpenXml.EMMA;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Nop.Core.Caching;
 using Nop.Core.Domain.Catalog;
 using Nop.Core.Domain.Discounts;
@@ -6,6 +7,7 @@ using Nop.Core.Domain.Gdpr;
 using Nop.Core.Domain.Orders;
 using Nop.Core.Domain.Payments;
 using Nop.Core.Domain.Shipping;
+using Nop.Core.Domain.Staffs;
 using Nop.Core.Domain.Tax;
 using Nop.Services;
 using Nop.Services.Catalog;
@@ -18,6 +20,7 @@ using Nop.Services.Messages;
 using Nop.Services.Plugins;
 using Nop.Services.Shipping;
 using Nop.Services.Shipping.Date;
+using Nop.Services.Staffs;
 using Nop.Services.Stores;
 using Nop.Services.Tax;
 using Nop.Services.Topics;
@@ -57,6 +60,8 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     protected readonly ITaxCategoryService _taxCategoryService;
     protected readonly ITopicTemplateService _topicTemplateService;
     protected readonly IVendorService _vendorService;
+    protected readonly IDepartmentService _departmentService;
+    protected readonly IDesignationService _designationService;
 
     #endregion
 
@@ -84,7 +89,10 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         IStoreService storeService,
         ITaxCategoryService taxCategoryService,
         ITopicTemplateService topicTemplateService,
-        IVendorService vendorService)
+        IVendorService vendorService,
+        IDepartmentService departmentService,
+        IDesignationService designationService
+        )
     {
         _categoryService = categoryService;
         _categoryTemplateService = categoryTemplateService;
@@ -109,6 +117,8 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
         _taxCategoryService = taxCategoryService;
         _topicTemplateService = topicTemplateService;
         _vendorService = vendorService;
+        _departmentService = departmentService;
+        _designationService = designationService;
     }
 
     #endregion
@@ -784,7 +794,7 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
     /// <summary>
     /// Prepare available plugin groups
     /// </summary>
-    /// <param name="items">Plugin group items</param>
+    /// <param name="items">Plugin item items</param>
     /// <param name="withSpecialDefaultItem">Whether to insert the first special item for the default value</param>
     /// <param name="defaultItemText">Default item text; pass null to use default value of the default item text</param>
     /// <returns>A task that represents the asynchronous operation</returns>
@@ -992,6 +1002,33 @@ public partial class BaseAdminModelFactory : IBaseAdminModelFactory
 
         //insert special item for the default value
         await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText);
+    }
+
+    public virtual async Task PrepareDepartmentsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null, string defaultItemValue = "0")
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        var allDepartments = await _departmentService.GetAllDepartmentsAsync();
+        foreach (var item in allDepartments)
+        {
+            items.Add(new SelectListItem(text: item.Name, value: item.Id.ToString()));
+        }
+
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
+    }
+
+    public virtual async Task PrepareDesignationsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null, string defaultItemValue = "0")
+    {
+        ArgumentNullException.ThrowIfNull(items);
+
+        var allDesignations = await _designationService.GetAllDesignationsAsync();
+        foreach (var item in allDesignations)
+        {
+            items.Add(new SelectListItem(text: item.Name, value: item.Id.ToString()));
+        }
+        //insert special item for the default value
+        await PrepareDefaultItemAsync(items, withSpecialDefaultItem, defaultItemText, defaultItemValue);
     }
 
     #endregion

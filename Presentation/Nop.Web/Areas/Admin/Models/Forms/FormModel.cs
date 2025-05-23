@@ -10,6 +10,7 @@ namespace Nop.Web.Areas.Admin.Models.Forms
         public FormModel()
         {
             FormFieldSearchModel = new FormFieldSearchModel();
+            AvailableDesignations = new List<SelectListItem>();
         }
 
         [NopResourceDisplayName("Admin.Forms.FormModel.Field.Name")]
@@ -20,6 +21,12 @@ namespace Nop.Web.Areas.Admin.Models.Forms
 
         [NopResourceDisplayName("Admin.Forms.FormModel.Field.SeName")]
         public string SeName { get; set; }
+
+        [NopResourceDisplayName("Admin.Forms.FormModel.Field.DepartmentId")]
+        public int DepartmentId { get; set; }
+        public IList<SelectListItem> AvailableDesignations { get; set; }
+
+
 
         public FormFieldSearchModel FormFieldSearchModel { get; set; }
     }

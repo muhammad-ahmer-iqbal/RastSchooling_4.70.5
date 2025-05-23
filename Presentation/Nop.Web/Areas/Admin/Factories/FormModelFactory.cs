@@ -21,6 +21,7 @@ namespace Nop.Web.Areas.Admin.Factories
         protected readonly ILocalizationService _localizationService;
         protected readonly IWebHelper _webHelper;
         protected readonly IUrlRecordService _urlRecordService;
+        protected readonly IBaseAdminModelFactory _baseAdminModelFactory;
 
         #endregion
 
@@ -32,7 +33,8 @@ namespace Nop.Web.Areas.Admin.Factories
             IFormFieldOptionService formFieldOptionService,
             ILocalizationService localizationService,
             IWebHelper webHelper,
-            IUrlRecordService urlRecordService
+            IUrlRecordService urlRecordService,
+            IBaseAdminModelFactory baseAdminModelFactory
             )
         {
             _formService = formService;
@@ -41,6 +43,7 @@ namespace Nop.Web.Areas.Admin.Factories
             _localizationService = localizationService;
             _webHelper = webHelper;
             _urlRecordService = urlRecordService;
+            _baseAdminModelFactory = baseAdminModelFactory;
         }
 
         #endregion
@@ -98,6 +101,9 @@ namespace Nop.Web.Areas.Admin.Factories
             }
 
             model.FormFieldSearchModel = await this.PrepareFormFieldSearchModelAsync(model.FormFieldSearchModel);
+            await _baseAdminModelFactory.PrepareDepartmentsAsync(
+                items: model.AvailableDesignations,
+                defaultItemText: await _localizationService.GetResourceAsync("admin.common.select"));
 
             return model;
         }

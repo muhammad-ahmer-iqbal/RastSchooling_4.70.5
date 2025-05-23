@@ -53,7 +53,13 @@ namespace Nop.Web.Areas.Admin.Models.Students
         public int? HouseId { get; set; }
         public IList<SelectListItem> AvailableHouses { get; set; }
 
+        [NopResourceDisplayName("Admin.Common.DefaultPasword")]
+        public string CustomerGuid { get; set; }
+
+
+
         public StudentLeaveSearchModel StudentLeaveSearchModel { get; set; }
         public StudentLeaveModel StudentLeaveModel { get; set; }
+
     }
 }

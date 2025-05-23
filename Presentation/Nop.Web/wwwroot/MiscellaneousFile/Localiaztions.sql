@@ -464,5 +464,48 @@ EXEC sp_AddLocalization
 GO
 
 
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Common.Password.CouldNotBeSet',
+@ResourceValue = 'Password could not be set'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Common.DefaultPasword',
+@ResourceValue = 'Default Password'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.DepartmentId',
+@ResourceValue = 'Select Department'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Staffs.TeacherModel.Fields.DesignationId.Required',
+@ResourceValue = 'Designation is required'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Staffs.TeacherModel.Fields.DepartmentId.Required',
+@ResourceValue = 'Department is required'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'Admin.Forms.FormModel.Field.DepartmentId.Required',
+@ResourceValue = 'Department is required'
+GO
+
+
+EXEC sp_AddLocalization 
+@ResourceName = 'admin.common.select',
+@ResourceValue = '--Select'
+GO
+
+
+
 
 

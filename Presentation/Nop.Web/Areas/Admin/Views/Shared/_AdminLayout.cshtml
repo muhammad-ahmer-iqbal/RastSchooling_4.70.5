@@ -268,6 +268,43 @@
                 $(this).magnificPopup('open');
             }
         });
+
+        function CopyText(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                const alert = document.createElement("div");
+                alert.textContent = "Copied!";
+                document.body.appendChild(alert);
+
+                Object.assign(alert.style, {
+                    position: "fixed",
+                    top: "20%",
+                    left: "50%",
+                    transform: "translate(-50%, -50%)",
+                    backgroundColor: "#4caf50",
+                    color: "white",
+                    padding: "15px 25px",
+                    borderRadius: "8px",
+                    fontSize: "16px",
+                    fontFamily: "sans-serif",
+                    boxShadow: "0 4px 10px rgba(0, 0, 0, 0.3)",
+                    zIndex: 9999,
+                    opacity: "1",
+                    transition: "opacity 0.5s ease"
+                });
+
+                document.body.appendChild(alert);
+
+                // Start fading out after 1.5s
+                setTimeout(() => {
+                    alert.style.opacity = "0";
+                }, 1500);
+
+                // Remove from DOM after 2s
+                setTimeout(() => {
+                    alert.remove();
+                }, 2000);
+            });
+        }
     </script>
 
     @NopHtml.GenerateScripts(ResourceLocation.Footer)

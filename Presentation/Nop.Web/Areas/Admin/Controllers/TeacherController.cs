@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using DocumentFormat.OpenXml.Vml.Office;
+using Microsoft.AspNetCore.Mvc;
 using Nop.Core;
 using Nop.Core.Domain.Customers;
 using Nop.Core.Domain.Staffs;
@@ -13,6 +14,7 @@ using Nop.Web.Areas.Admin.Models.Customers;
 using Nop.Web.Areas.Admin.Models.Staffs;
 using Nop.Web.Framework.Controllers;
 using Nop.Web.Framework.Mvc.Filters;
+using NUglify.Helpers;
 using ILogger = Nop.Services.Logging.ILogger;
 
 namespace Nop.Web.Areas.Admin.Controllers
@@ -68,28 +70,38 @@ namespace Nop.Web.Areas.Admin.Controllers
 
             if (string.IsNullOrEmpty(model.FirstName))
             {
-                ModelState.AddModelError(nameof(model.FirstName), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.FirstName.Required"));
+                ModelState.AddModelError(nameof(model.FirstName), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.FirstName.Required"));
             }
 
             if (string.IsNullOrEmpty(model.LastName))
             {
-                ModelState.AddModelError(nameof(model.LastName), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.LastName.Required"));
+                ModelState.AddModelError(nameof(model.LastName), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.LastName.Required"));
             }
 
             if (string.IsNullOrEmpty(model.Email))
             {
-                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.Email.Required"));
+                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.Email.Required"));
             }
             else if (!CommonHelper.IsValidEmail(model.Email))
             {
-                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.Email.InValid"));
+                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.Email.InValid"));
             }
-            else if (!model.Id.Equals(default)
-                && await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
-                && existingCustomer is not null &&
-                !existingCustomer.Id.Equals(model.Id))
+            else if (await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
+                && existingCustomer is not null
+                && (model.Id.Equals(default)
+                    || !model.Id.Equals(existingCustomer.Id)))
             {
-                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Teachers.TeacherModel.Fields.Email.AlreadyInUse"));
+                ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.Email.AlreadyInUse"));
+            }
+
+            if (model.DesignationId.Equals(default))
+            {
+                ModelState.AddModelError(nameof(model.DesignationId), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.DesignationId.Required"));
+            }
+
+            if (model.DepartmentId.Equals(default))
+            {
+                ModelState.AddModelError(nameof(model.DepartmentId), await _localizationService.GetResourceAsync("Admin.Staffs.TeacherModel.Fields.DepartmentId.Required"));
             }
         }
 
@@ -197,6 +209,21 @@ namespace Nop.Web.Areas.Admin.Controllers
                     //insert entity
                     var entity = await InsertUpdateCustomerAsync(model, default);
 
+                    #region Set Default Password
+
+                    var changePassRequest = new ChangePasswordRequest(
+                        email: entity.Email,
+                        validateRequest: false,
+                        newPasswordFormat: _customerSettings.DefaultPasswordFormat,
+                        newPassword: entity.CustomerGuid.ToString());
+                    var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
+                    if (!changePassResult.Success)
+                    {
+                        ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Admin.Common.Password.CouldNotBeSet"));
+                    }
+
+                    #endregion
+
                     //success notification
                     _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Common.Added"));
                     return continueEditing ? RedirectToAction("Edit", new { id = entity.Id }) : RedirectToAction("List");
@@ -269,14 +296,14 @@ namespace Nop.Web.Areas.Admin.Controllers
             if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
-            //try to get a customer with the specified id
+            //try to get a entity with the specified id
             var entity = await _customerService.GetTeacherByIdAsync(id);
             if (entity == null)
                 return RedirectToAction("List");
 
             try
             {
-                //delete customer
+                //delete entity
                 await _customerService.DeleteCustomerAsync(entity);
 
                 //success notification
@@ -299,13 +326,16 @@ namespace Nop.Web.Areas.Admin.Controllers
             if (!await _permissionService.AuthorizeAsync(StandardPermissionProvider.ManageTeachers))
                 return AccessDeniedView();
 
-            //try to get a customer with the specified id
-            var customer = await _customerService.GetTeacherByIdAsync(model.Id);
-            if (customer == null)
+            //try to get a entity with the specified id
+            var entity = await _customerService.GetTeacherByIdAsync(model.Id);
+            if (entity == null)
                 return RedirectToAction("List");
 
-            var changePassRequest = new ChangePasswordRequest(customer.Email,
-                false, _customerSettings.DefaultPasswordFormat, model.Password);
+            var changePassRequest = new ChangePasswordRequest(
+                email: entity.Email,
+                validateRequest: false,
+                newPasswordFormat: _customerSettings.DefaultPasswordFormat,
+                newPassword: model.Password);
             var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
             if (changePassResult.Success)
                 _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Common.PasswordChanged"));
@@ -313,7 +343,7 @@ namespace Nop.Web.Areas.Admin.Controllers
                 foreach (var error in changePassResult.Errors)
                     _notificationService.ErrorNotification(error);
 
-            return RedirectToAction("Edit", new { id = customer.Id });
+            return RedirectToAction("Edit", new { id = entity.Id });
         }
 
 

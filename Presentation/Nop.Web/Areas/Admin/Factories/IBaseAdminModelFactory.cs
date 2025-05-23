@@ -309,4 +309,6 @@ public partial interface IBaseAdminModelFactory
     /// <returns>A task that represents the asynchronous operation</returns>
     Task PrepareSpecificationAttributeGroupsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null);
     Task PrepareActiveOptionsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null);
+    Task PrepareDepartmentsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null, string defaultItemValue = "0");
+    Task PrepareDesignationsAsync(IList<SelectListItem> items, bool withSpecialDefaultItem = true, string defaultItemText = null, string defaultItemValue = "0");
 }

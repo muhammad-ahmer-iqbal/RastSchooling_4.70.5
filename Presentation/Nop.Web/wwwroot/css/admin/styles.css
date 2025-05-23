@@ -939,11 +939,14 @@ i.false-icon {
 }
 
 .brand-link .brand-image-xl {
-  max-height: 45px;
+    max-height: 70px;
+    left: 50%;
+    transform: translateX(-50%);
 }
 
 .layout-fixed .brand-link {
-  width: auto;
+    width: auto;
+    line-height: 3;
 }
 
 .nav-sidebar .nav-link p {
@@ -2223,3 +2226,4 @@ div.dataTables_wrapper div.dataTables_paginate {
     float: none;
   }
 }
+

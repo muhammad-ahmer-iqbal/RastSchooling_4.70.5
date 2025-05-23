@@ -94,10 +94,10 @@ namespace Nop.Web.Areas.Admin.Controllers
             {
                 ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.Email.InValid"));
             }
-            else if (!model.Id.Equals(default)
-                && await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
-                && existingCustomer is not null &&
-                !existingCustomer.Id.Equals(model.Id))
+            else if (await _customerService.GetCustomerByEmailAsync(model.Email) is var existingCustomer
+                && existingCustomer is not null
+                && (model.Id.Equals(default)
+                    || !model.Id.Equals(existingCustomer.Id)))
             {
                 ModelState.AddModelError(nameof(model.Email), await _localizationService.GetResourceAsync("Admin.Students.StudentModel.Fields.Email.AlreadyInUse"));
             }
@@ -248,6 +248,21 @@ namespace Nop.Web.Areas.Admin.Controllers
                     //insert entity
                     var entity = await InsertUpdateCustomerAsync(model, default);
 
+                    #region Set Default Password
+
+                    var changePassRequest = new ChangePasswordRequest(
+                        email: entity.Email,
+                        validateRequest: false,
+                        newPasswordFormat: _customerSettings.DefaultPasswordFormat,
+                        newPassword: entity.CustomerGuid.ToString());
+                    var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
+                    if (!changePassResult.Success)
+                    {
+                        ModelState.AddModelError(string.Empty, await _localizationService.GetResourceAsync("Admin.Common.Password.CouldNotBeSet"));
+                    }
+
+                    #endregion
+
                     //success notification
                     _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Common.Added"));
                     return continueEditing ? RedirectToAction("Edit", new { id = entity.Id }) : RedirectToAction("List");
@@ -355,8 +370,11 @@ namespace Nop.Web.Areas.Admin.Controllers
             if (entity == null)
                 return RedirectToAction("List");
 
-            var changePassRequest = new ChangePasswordRequest(entity.Email,
-                false, _customerSettings.DefaultPasswordFormat, model.Password);
+            var changePassRequest = new ChangePasswordRequest(
+                email: entity.Email,
+                validateRequest: false,
+                newPasswordFormat: _customerSettings.DefaultPasswordFormat,
+                newPassword: model.Password);
             var changePassResult = await _customerRegistrationService.ChangePasswordAsync(changePassRequest);
             if (changePassResult.Success)
                 _notificationService.SuccessNotification(await _localizationService.GetResourceAsync("Admin.Common.PasswordChanged"));

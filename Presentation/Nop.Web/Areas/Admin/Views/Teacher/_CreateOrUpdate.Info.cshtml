@@ -1,115 +1,128 @@
 @model TeacherModel
 
 <div class="card-body">
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Email" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Email" asp-required="true" />
-            <span asp-validation-for="Email"></span>
-        </div>
-    </div>
+	@if (Model.Id > 0)
+	{
+		<div class="form-group row">
+			<div class="col-md-3">
+				<nop-label asp-for="CustomerGuid" />
+			</div>
+			<div class="col-md-9 align-content-center">
+				@Model.CustomerGuid
+				<i class="fas fa-solid fa-link" onclick="CopyText('@Model.CustomerGuid')" style="cursor: pointer;"></i>
+			</div>
+		</div>
+	}
 
-    @if (Model.Id > 0)
-    {
-        <div class="form-group row hide-on-viewmode">
-            <div class="col-md-3">
-                <nop-label asp-for="Password" />
-            </div>
-            <div class="col-md-9">
-                <div class="input-group">
-                    <nop-editor asp-for="Password" html-attributes="@(new { autocomplete = "new-password" })" />
-                    <div class="input-group-append">
-                        <button type="submit" name="changepassword" class="btn btn-info">
-                            @T("Admin.Customers.Customers.Fields.Password.Change")
-                        </button>
-                    </div>
-                </div>
-                <span asp-validation-for="Password"></span>
-            </div>
-        </div>
-    }
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="Email" />
+		</div>
+		<div class="col-md-9">
+			<nop-editor asp-for="Email" asp-required="true" />
+			<span asp-validation-for="Email"></span>
+		</div>
+	</div>
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="FirstName" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="FirstName" asp-required="true" />
-            <span asp-validation-for="FirstName"></span>
-        </div>
-    </div>
+	@if (Model.Id > 0)
+	{
+		<div class="form-group row hide-on-viewmode">
+			<div class="col-md-3">
+				<nop-label asp-for="Password" />
+			</div>
+			<div class="col-md-9">
+				<div class="input-group">
+					<nop-editor asp-for="Password" html-attributes="@(new { autocomplete = "new-password" })" />
+					<div class="input-group-append">
+						<button type="submit" name="changepassword" class="btn btn-info">
+							@T("Admin.Customers.Customers.Fields.Password.Change")
+						</button>
+					</div>
+				</div>
+				<span asp-validation-for="Password"></span>
+			</div>
+		</div>
+	}
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="LastName" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="LastName" asp-required="true" />
-            <span asp-validation-for="LastName"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="FirstName" />
+		</div>
+		<div class="col-md-9">
+			<nop-editor asp-for="FirstName" asp-required="true" />
+			<span asp-validation-for="FirstName"></span>
+		</div>
+	</div>
+
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="LastName" />
+		</div>
+		<div class="col-md-9">
+			<nop-editor asp-for="LastName" asp-required="true" />
+			<span asp-validation-for="LastName"></span>
+		</div>
+	</div>
 
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Active" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Active" />
-            <span asp-validation-for="Active"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="Active" />
+		</div>
+		<div class="col-md-9">
+			<nop-editor asp-for="Active" />
+			<span asp-validation-for="Active"></span>
+		</div>
+	</div>
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="Salary" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="Salary" />
-            <span asp-validation-for="Salary"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="Salary" />
+		</div>
+		<div class="col-md-9">
+			<nop-editor asp-for="Salary" />
+			<span asp-validation-for="Salary"></span>
+		</div>
+	</div>
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="ShiftId" />
-        </div>
-        <div class="col-md-9">
-            <nop-select asp-for="ShiftId" asp-items="Model.AvailableShifts" />
-            <span asp-validation-for="ShiftId"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="ShiftId" />
+		</div>
+		<div class="col-md-9">
+			<nop-select asp-for="ShiftId" asp-items="Model.AvailableShifts" />
+			<span asp-validation-for="ShiftId"></span>
+		</div>
+	</div>
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="DateOfJoining" />
-        </div>
-        <div class="col-md-9">
-            <nop-editor asp-for="DateOfJoining" />
-            <span asp-validation-for="DateOfJoining"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="DateOfJoining" />
+		</div>
+		<div class="col-md-9">
+			<nop-editor asp-for="DateOfJoining" />
+			<span asp-validation-for="DateOfJoining"></span>
+		</div>
+	</div>
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="DepartmentId" />
-        </div>
-        <div class="col-md-9">
-            <nop-select asp-for="DepartmentId" asp-items="Model.AvailableDepartments" />
-            <span asp-validation-for="DepartmentId"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="DepartmentId" />
+		</div>
+		<div class="col-md-9">
+			<nop-select asp-for="DepartmentId" asp-items="Model.AvailableDepartments" />
+			<span asp-validation-for="DepartmentId"></span>
+		</div>
+	</div>
 
-    <div class="form-group row">
-        <div class="col-md-3">
-            <nop-label asp-for="DesignationId" />
-        </div>
-        <div class="col-md-9">
-            <nop-select asp-for="DesignationId" asp-items="Model.AvailableDesignations" />
-            <span asp-validation-for="DesignationId"></span>
-        </div>
-    </div>
+	<div class="form-group row">
+		<div class="col-md-3">
+			<nop-label asp-for="DesignationId" />
+		</div>
+		<div class="col-md-9">
+			<nop-select asp-for="DesignationId" asp-items="Model.AvailableDesignations" />
+			<span asp-validation-for="DesignationId"></span>
+		</div>
+	</div>
 
 </div>
