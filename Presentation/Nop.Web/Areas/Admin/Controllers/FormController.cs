@@ -14,7 +14,6 @@ using Nop.Web.Areas.Admin.Infrastructure.Mapper.Extensions;
 
 using ILogger = Nop.Services.Logging.ILogger;
 using Nop.Services.Seo;
-using Nop.Core;
 
 namespace Nop.Web.Areas.Admin.Controllers
 {
@@ -92,7 +91,8 @@ namespace Nop.Web.Areas.Admin.Controllers
 
             await _urlRecordService.SaveSlugAsync(
                 entity: entity,
-                slug: seName);
+                slug: seName,
+                languageId: default);
 
             return entity;
         }

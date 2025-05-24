@@ -112,6 +112,7 @@ public partial class NopStartup : INopStartup
         services.AddScoped<Factories.ISitemapModelFactory, Factories.SitemapModelFactory>();
         services.AddScoped<Factories.ITopicModelFactory, Factories.TopicModelFactory>();
         services.AddScoped<Factories.IVendorModelFactory, Factories.VendorModelFactory>();
+        services.AddScoped<Factories.IFormModelFactory, Factories.FormModelFactory>();
 
         //helpers classes
         services.AddScoped<ITinyMceHelper, TinyMceHelper>();

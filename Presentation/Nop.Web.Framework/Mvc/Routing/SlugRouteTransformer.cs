@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Routing;
 using Nop.Core;
 using Nop.Core.Domain.Blogs;
 using Nop.Core.Domain.Catalog;
+using Nop.Core.Domain.Forms;
 using Nop.Core.Domain.Localization;
 using Nop.Core.Domain.News;
 using Nop.Core.Domain.Seo;
@@ -139,6 +140,10 @@ public partial class SlugRouteTransformer : DynamicRouteValueTransformer
 
             case var name when name.Equals(nameof(Topic), StringComparison.InvariantCultureIgnoreCase):
                 RouteToAction(values, "Topic", "TopicDetails", slug, (NopRoutingDefaults.RouteValue.TopicId, urlRecord.EntityId));
+                return;
+
+            case var name when name.Equals(nameof(Form), StringComparison.InvariantCultureIgnoreCase):
+                RouteToAction(values, "Form", "FormDetail", slug, (NopRoutingDefaults.RouteValue.FormId, urlRecord.EntityId));
                 return;
         }
     }

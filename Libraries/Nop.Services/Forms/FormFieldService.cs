@@ -24,7 +24,7 @@ namespace Nop.Services.Forms
         #region Methods
 
         public virtual async Task<IPagedList<FormField>> GetAllFormFieldsAsync(
-            int formId = default,
+            int formId,
             int pageIndex = default,
             int pageSize = int.MaxValue
             )

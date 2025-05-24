@@ -158,6 +158,9 @@ public static partial class NopRoutingDefaults
         /// Gets default key for catalog route value
         /// </summary>
         public static string CatalogSeName => "CatalogSeName";
+
+        public static string FormId => "formId";
+
     }
 
     #endregion
